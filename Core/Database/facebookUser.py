@@ -24,3 +24,13 @@ class FacebookUser(BaseModel):
         if not created:
             user.followers = followerNumber
             user.save()
+
+    @classmethod
+    def update_or_create(cls, fbUsername, defaultsObject):
+        user, created = cls.get_or_create(
+            username=fbUsername, defaults=defaultsObject
+        )
+        if not created:
+            for key, value in defaultsObject.items():
+                setattr(user, key, value)
+            user.save()
