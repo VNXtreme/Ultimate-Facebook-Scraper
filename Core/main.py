@@ -13,8 +13,16 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 # -------------------------------------------------------------
-# from src.database.db import FacebookUser
-from Database.facebookUser import FacebookUser
+# Xtreme
+# def update_follower_number(fbUsername, followerNumber):
+#     user, created = FacebookUser.get_or_create(username=fbUsername, defaults={'followers': followerNumber})
+#     if(not created):
+#         user.followers = followerNumber
+#         user.save()
+from Functions.follower import scrape_follower
+
+# -------------------------------------------------------------
+
 
 # -------------------------------------------------------------
 
@@ -199,9 +207,9 @@ def get_time(x):
     finally:
         return time
 
-def extract_follower_number(text):
-    followerNumber = text.split(' ', 1)[0].replace(',', '')
-    return followerNumber
+# def extract_follower_number(text):
+#     followerNumber = text.split(' ', 1)[0].replace(',', '')
+#     return followerNumber
 
 def extract_and_write_posts(elements, filename):
     try:
@@ -479,8 +487,9 @@ def scrape_data(id, scan_list, section, elements_path, save_status, file_names):
                 scroll()
             
             data = driver.find_elements_by_xpath(elements_path[i])
+            return data
             
-            save_to_file(file_names[i], data, save_status, i, id)
+            # save_to_file(file_names[i], data, save_status, i, id)
 
         except:
             print("Exception (scrape_data)", str(i), "Status =", str(save_status), sys.exc_info()[0])
@@ -610,14 +619,6 @@ def main():
         print("Input file is empty.")
 
 
-# -------------------------------------------------------------
-# Xtreme
-# def update_follower_number(fbUsername, followerNumber):
-#     user, created = FacebookUser.get_or_create(username=fbUsername, defaults={'followers': followerNumber})
-#     if(not created):
-#         user.followers = followerNumber
-#         user.save()
-
 def start_scape(ids):
     folder = os.path.join(os.getcwd(), "Data")
     create_folder(folder)
@@ -725,15 +726,16 @@ def start_scape(ids):
 
         # ----------------------------------------------------------------------------
         print("----------------------------------------")
-        print("Followers number:")
-        scan_list = [None]
-        section = ['/about']
-        elements_path = ["//div[@class='_3yo1']/span/span"]
-        file_names = ["Followers_number.txt"]
-        save_status = 5
-        scrape_data(id, scan_list, section, elements_path, save_status, file_names)
+        print("Scrape Followers")
+        # scan_list = [None]
+        # section = ['/about']
+        # elements_path = ["//div[@class='_3yo1']/span/span"]
+        # file_names = ["Followers_number.txt"]
+        # save_status = 5
+        # scrape_data(id, scan_list, section, elements_path, save_status, file_names)
+        followerNumber = scrape_follower(driver, id)
 
-        print("Followers number Done!")
+        print(f"Result: {followerNumber}. Done!")
         print("----------------------------------------")
         
     # ----------------------------------------------------------------------------
