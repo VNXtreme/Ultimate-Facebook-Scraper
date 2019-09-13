@@ -16,17 +16,8 @@ class FacebookUser(BaseModel):
     added_date = DateTimeField()
     is_featured = BooleanField()
 
-    def update_follower_number(self, fbUsername, followerNumber):
-        user, created = self.get_or_create(username=fbUsername,
-                                           defaults={
-                                               'followers': followerNumber}
-                                           )
-        if not created:
-            user.followers = followerNumber
-            user.save()
-
     @classmethod
-    def update_or_create(cls, fbUsername, defaultsObject):
+    def update_or_create(cls, fbUsername: str, defaultsObject: object):
         user, created = cls.get_or_create(
             username=fbUsername, defaults=defaultsObject
         )

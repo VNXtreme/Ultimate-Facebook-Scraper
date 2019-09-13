@@ -14,7 +14,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 from Database.facebookUser import FacebookUser
 # -------------------------------------------------------------
-from Functions.common import is_timeline_layout
+from Functions.common import extract_fb_username, is_timeline_layout
 from Functions.follower import scrape_follower
 from Functions.name import scrape_name
 
@@ -641,6 +641,7 @@ def main():
     else:
         print("Input file is empty.")
 
+
 def start_scape(ids):
     folder = os.path.join(os.getcwd(), "Data")
     create_folder(folder)
@@ -665,19 +666,20 @@ def start_scape(ids):
 
         # ----------------------------------------------------------------------------
         print("----------------------------------------")
-        isTimelineLayout = is_timeline_layout(driver) #check layout 
-        
-        name = scrape_name(driver, isTimelineLayout)
-        print(f"Name: {name}")
-        
+        isTimelineLayout = is_timeline_layout(driver)  # check layout
+
+        name = scrape_name(driver, isTimelineLayout: bool)
         followerNumber = scrape_follower(driver, id, isTimelineLayout)
-        print(f"Followers: {followerNumber}")
 
         # update DB
-        # FacebookUser.update_or_create('trantieuvy.201x', {'followers': followerNumber, 'name': name})
-        print("----------------Done---------------------")
+        fbUsername = extract_fb_username(id)
+        FacebookUser.update_or_create(fbUsername, {
+            'followers': followerNumber,
+            'name': name
+        })
 
-    # ----------------------------------------------------------------------------
+        print("----------------Done---------------------")
+        # ----------------------------------------------------------------------------
 
     print("\nProcess Completed.")
 
