@@ -17,6 +17,7 @@ from Database.facebookUser import FacebookUser
 from Functions.common import extract_fb_username, is_timeline_layout
 from Functions.follower import scrape_follower
 from Functions.name import scrape_name
+from Functions.profilePicture import scrape_profile_picture
 
 # -------------------------------------------------------------
 
@@ -651,7 +652,6 @@ def start_scape(ids):
     for id in ids:
         driver.get(id)
         url = driver.current_url
-        print(url, id)
         id = create_original_link(url)
 
         print("\nScraping:", id)
@@ -668,14 +668,17 @@ def start_scape(ids):
         print("----------------------------------------")
         isTimelineLayout = is_timeline_layout(driver)  # check layout
 
-        name = scrape_name(driver, isTimelineLayout: bool)
+        #scrape
+        profilePictureURL = scrape_profile_picture(driver, isTimelineLayout)
+        name = scrape_name(driver, isTimelineLayout)
         followerNumber = scrape_follower(driver, id, isTimelineLayout)
 
         # update DB
         fbUsername = extract_fb_username(id)
         FacebookUser.update_or_create(fbUsername, {
             'followers': followerNumber,
-            'name': name
+            'name': name,
+            'profile_picture_url': profilePictureURL
         })
 
         print("----------------Done---------------------")
