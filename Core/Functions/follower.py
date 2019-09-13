@@ -14,17 +14,4 @@ def scrape_follower(driver, id, isTimelineLayout):
         element = driver.find_element_by_xpath(elementPath)
         followerNumber = element.text.split(' ', 3)[2].replace(',', '')
 
-    # update DB
-    # FBusername = extract_fb_username(id)
-    # update_follower_number(FBusername, followerNumber)
-    # FacebookUser.update_or_create(FBusername, followerNumber)
-
     return followerNumber
-
-
-# def update_follower_number(fbUsername, followerNumber):
-#     user, created = FacebookUser.get_or_create(
-#         username=fbUsername, defaults={'followers': followerNumber})
-#     if not created:
-#         user.followers = followerNumber
-#         user.save()

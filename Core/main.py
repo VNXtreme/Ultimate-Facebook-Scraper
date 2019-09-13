@@ -16,6 +16,7 @@ from Database.facebookUser import FacebookUser
 # -------------------------------------------------------------
 from Functions.common import is_timeline_layout
 from Functions.follower import scrape_follower
+from Functions.name import scrape_name
 
 # -------------------------------------------------------------
 
@@ -663,23 +664,18 @@ def start_scape(ids):
             continue
 
         # ----------------------------------------------------------------------------
-        #check layout to get FB name
-        isTimelineLayout = is_timeline_layout(driver)
-        # fullnameElement = safe_find_element_by_id(driver, 'fb-timeline-cover-name')
-        # if fullnameElement:
-        #     fullname = fullnameElement.text
-        # else:
-        #     fullnameElement =  driver.find_elements_by_xpath("//*[@id='seo_h1_tag']/a/span")
-        #     fullname = fullnameElement[0].text
-        
-        # # ----------------------------------------------------------------------------
-        # print("----------------------------------------")
-        
-   
-        followerNumber = scrape_follower(driver, id, isTimelineLayout)
-        # FacebookUser.update_or_create('trantieuvy.201x', {'followers': followerNumber, 'name': fullname})
-        print(f"Result: {followerNumber}. Done!")
         print("----------------------------------------")
+        isTimelineLayout = is_timeline_layout(driver) #check layout 
+        
+        name = scrape_name(driver, isTimelineLayout)
+        print(f"Name: {name}")
+        
+        followerNumber = scrape_follower(driver, id, isTimelineLayout)
+        print(f"Followers: {followerNumber}")
+
+        # update DB
+        # FacebookUser.update_or_create('trantieuvy.201x', {'followers': followerNumber, 'name': name})
+        print("----------------Done---------------------")
 
     # ----------------------------------------------------------------------------
 
