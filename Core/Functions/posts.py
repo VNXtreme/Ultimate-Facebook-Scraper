@@ -1,66 +1,36 @@
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.webdriver.support.ui import WebDriverWait
+
+total_scrolls = 10
+scroll_time = 5
+old_height = 0
+
 def scrape_posts(driver, isTimelineLayout: bool):
+    scroll(driver)
+
     if isTimelineLayout:
         elementPosts = driver.find_elements_by_xpath(
             '//div[@class="_5pcb _4b0l _2q8l"]')
-        return extract_posts(elementPosts)
+        return extract_timeline_posts(elementPosts)
 
     else:
-        return normal_layout_posts(driver)
+        return driver.find_elements_by_xpath('//div[@class="_4-u2 _4-u8"]')
 
     return 1
 
-# def timeline_layout_posts(driver):
-#     elementPosts = driver.find_elements_by_xpath('//div[@class="_5pcb _4b0l _2q8l"]')
-#     arrayPosts = extract_posts(elementPosts)
-#     print('arrayPosts', arrayPosts)
-#     return arrayPosts
 
-
-def normal_layout_posts(driver):
-    elementPosts = driver.find_elements_by_xpath('//div[@class="_4-u2 _4-u8"]')
-    return
-
-
-def get_link(driver) -> str:
-    link = driver.find_element_by_tag_name(
-        'abbr').find_element_by_xpath(".//ancestor::a")
-
-    if link.get_attribute('ajaxify') is None:
-        return link.get_attribute('href')
-
-    return link.get_attribute('ajaxify')
-
-
-def extract_posts(elements) -> list:
+def extract_timeline_posts(elements) -> list:
     try:
         posts = []
         for postElement in elements:
             try:
-                video_link = " "
-                title = " "
-                status = " "
-                link = ""
-                img = " "
-                time = " "
-                message = post_message(postElement)
-                # time
+                title = get_title(postElement)
                 time = get_time(postElement)
                 link = get_link(postElement)
-
-                # title
-                title = get_title(postElement)
-                if title.find("shared a memory") > 0:
-                    postElement = postElement.find_element_by_xpath(
-                        ".//div[@class='_1dwg _1w_m']")
-                    title = get_title(postElement)
-
-                # if not isinstance(title, str):
-                #     title = title.text
-
                 status = get_status(postElement)
 
-                status = status.replace("\n", " ")
-                title = title.replace("\n", " ")
+                postMessage = post_message(postElement)
+                postImage = post_image(postElement)
 
                 likes = total_like(postElement)
                 loves = total_love(postElement)
@@ -77,16 +47,26 @@ def extract_posts(elements) -> list:
                     comments,
                     shares
                 ]
-                posts.append([message, time, title, link, status, reactions])
+                posts.append([postMessage, postImage, time, title, link, status, reactions])
 
             except Exception as extractError:
-                return 'extract loop: '+extractError
+                print('extract loop: ', extractError) 
         return posts
-    except Exception as e:
+    except NoSuchElementException as e:
         print("Exception (extract_posts)",
               "Status =", e)
 
     return
+
+
+def get_link(driver) -> str:
+    link = driver.find_element_by_tag_name(
+        'abbr').find_element_by_xpath(".//ancestor::a")
+
+    if link.get_attribute('ajaxify') is None:
+        return link.get_attribute('href')
+
+    return link.get_attribute('ajaxify')
 
 
 def total_like(element) -> str:
@@ -109,23 +89,31 @@ def total_comment(element) -> str:
     return element.find_element_by_xpath('.//a[@data-testid="UFI2CommentsCount/root"]').text
 
 
-def total_share(element):
+def total_share(element) -> str:
     return element.find_element_by_xpath('.//a[@data-testid="UFI2SharesCount/root"]').text
 
 
-def post_message(element):
-    return element.find_element_by_xpath('.//div[@class="_5pbx userContent _3576"]/p').get_attribute('innerHTML')
+def post_message(element) -> str:
+    return element.find_element_by_xpath('.//div[contains(@class, "_5pbx userContent")]').text
 
 
-def get_status(x):
+def post_image(element):
+    try:
+        return element.find_element_by_xpath('.//div[@class="_3x-2"]').find_element_by_tag_name('img').get_attribute('src')
+    except NoSuchElementException:
+        # print("post_image error: " , e)
+        return None
+    
+
+def get_status(x) -> str:
     status = ""
     try:
         status = x.find_element_by_xpath(".//div[@class='_5wj-']").text
-    except:
+    except NoSuchElementException:
         try:
             status = x.find_element_by_xpath(
                 ".//div[@class='userContent']").text
-        except:
+        except NoSuchElementException:
             pass
     return status
 
@@ -134,7 +122,7 @@ def get_div_links(x, tag):
     try:
         temp = x.find_element_by_xpath(".//div[@class='_3x-2']")
         return temp.find_element_by_tag_name(tag)
-    except:
+    except NoSuchElementException:
         return ""
 
 
@@ -146,17 +134,21 @@ def get_title_links(title):
 def get_title(x):
     title = ""
     try:
-        title = x.find_element_by_xpath(".//span[@class='fwb fcg']/a")
+        title = x.find_element_by_xpath(".//span[@class='fwb fcg']/a").text
     except:
         try:
-            title = x.find_element_by_xpath(".//span[@class='fcg']/a")
+            title = x.find_element_by_xpath(".//span[@class='fcg']/a").text
         except:
             try:
-                title = x.find_element_by_xpath(".//span[@class='fwn fcg']/a")
+                title = x.find_element_by_xpath(".//span[@class='fwn fcg']/span").text
             except:
                 pass
     finally:
-        return title.text
+        # if title.find("shared a memory") > 0:
+        #             postElement = postElement.find_element_by_xpath(
+        #                 ".//div[@class='_1dwg _1w_m']")
+        #             title = get_title(postElement)
+        return title
 
 
 def get_time(x):
@@ -172,6 +164,28 @@ def get_time(x):
 
     finally:
         return time
+
+def scroll(driver):
+    global old_height
+    current_scrolls = 0
+
+    while (True):
+        try:
+            if current_scrolls == total_scrolls:
+                return
+
+            old_height = driver.execute_script("return document.body.scrollHeight")
+            driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            WebDriverWait(driver, scroll_time, 0.05).until(lambda driver: check_height(driver))
+            current_scrolls += 1
+        except TimeoutException:
+            break
+
+    return
+
+def check_height(driver):
+    new_height = driver.execute_script("return document.body.scrollHeight")
+    return new_height != old_height
 
 
 ##
@@ -213,3 +227,14 @@ def get_time(x):
 # else:
 #     type = "others"
 ##
+
+# def timeline_layout_posts(driver):
+#     elementPosts = driver.find_elements_by_xpath('//div[@class="_5pcb _4b0l _2q8l"]')
+#     arrayPosts = extract_posts(elementPosts)
+#     print('arrayPosts', arrayPosts)
+#     return arrayPosts
+
+
+# def normal_layout_posts(driver):
+#     elementPosts = driver.find_elements_by_xpath('//div[@class="_4-u2 _4-u8"]')
+#     return

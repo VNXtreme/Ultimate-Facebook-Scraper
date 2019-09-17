@@ -674,7 +674,7 @@ def start_scape(ids):
         # name = scrape_name(driver, isTimelineLayout)
         # followerNumber = scrape_follower(driver, id, isTimelineLayout)
         fbPosts = scrape_posts(driver, isTimelineLayout)
-        print('post', fbPosts)
+        # print('post', fbPosts)
         # update DB
         # fbUsername = extract_fb_username(id)
         # FacebookUser.update_or_create(fbUsername, {
