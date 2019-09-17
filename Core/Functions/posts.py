@@ -5,6 +5,7 @@ total_scrolls = 10
 scroll_time = 5
 old_height = 0
 
+
 def scrape_posts(driver, isTimelineLayout: bool):
     scroll(driver)
 
@@ -27,7 +28,6 @@ def extract_timeline_posts(elements) -> list:
                 title = get_title(postElement)
                 time = get_time(postElement)
                 link = get_link(postElement)
-                status = get_status(postElement)
 
                 postMessage = post_message(postElement)
                 postImage = post_image(postElement)
@@ -47,10 +47,11 @@ def extract_timeline_posts(elements) -> list:
                     comments,
                     shares
                 ]
-                posts.append([postMessage, postImage, time, title, link, status, reactions])
-
+                posts.append(
+                    [postMessage, postImage, time, title, link, reactions])
+                print(time, '\n')
             except Exception as extractError:
-                print('extract loop: ', extractError) 
+                print('extract loop: ', extractError)
         return posts
     except NoSuchElementException as e:
         print("Exception (extract_posts)",
@@ -103,19 +104,18 @@ def post_image(element):
     except NoSuchElementException:
         # print("post_image error: " , e)
         return None
-    
 
-def get_status(x) -> str:
-    status = ""
-    try:
-        status = x.find_element_by_xpath(".//div[@class='_5wj-']").text
-    except NoSuchElementException:
-        try:
-            status = x.find_element_by_xpath(
-                ".//div[@class='userContent']").text
-        except NoSuchElementException:
-            pass
-    return status
+
+# def get_status(x) -> str:
+#     try:
+#         status = x.find_element_by_xpath(".//div[@class='_5wj-']").text
+#     except NoSuchElementException:
+#         try:
+#             status = x.find_element_by_xpath(
+#                 ".//div[@class='userContent']").text
+#         except NoSuchElementException:
+#             pass
+#     return status
 
 
 def get_div_links(x, tag):
@@ -140,7 +140,8 @@ def get_title(x):
             title = x.find_element_by_xpath(".//span[@class='fcg']/a").text
         except:
             try:
-                title = x.find_element_by_xpath(".//span[@class='fwn fcg']/span").text
+                title = x.find_element_by_xpath(
+                    ".//span[@class='fwn fcg']/span").text
             except:
                 pass
     finally:
@@ -152,18 +153,17 @@ def get_title(x):
 
 
 def get_time(x):
-    time = ""
     try:
-        time = x.find_element_by_tag_name('abbr').get_attribute('title')
-        time = str("%02d" % int(time.split(", ")[1].split()[1]), ) + "-" + str(
-            ("%02d" % (int((list(calendar.month_abbr).index(time.split(", ")[1].split()[0][:3]))),))) + "-" + \
-            time.split()[3] + " " + str("%02d" % int(time.split()[5].split(":")[0])) + ":" + str(
-            time.split()[5].split(":")[1])
+        # time = x.find_element_by_tag_name('abbr').get_attribute('title')
+        # time = str("%02d" % int(time.split(", ")[1].split()[1]), ) + "-" + str(
+        #     ("%02d" % (int((list(calendar.month_abbr).index(time.split(", ")[1].split()[0][:3]))),))) + "-" + \
+        #     time.split()[3] + " " + str("%02d" % int(time.split()[5].split(":")[0])) + ":" + str(
+        #     time.split()[5].split(":")[1])
+        
+        return x.find_element_by_tag_name('abbr').get_attribute('data-utime') #timestamp
     except:
-        pass
+        return ''
 
-    finally:
-        return time
 
 def scroll(driver):
     global old_height
@@ -174,14 +174,18 @@ def scroll(driver):
             if current_scrolls == total_scrolls:
                 return
 
-            old_height = driver.execute_script("return document.body.scrollHeight")
-            driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-            WebDriverWait(driver, scroll_time, 0.05).until(lambda driver: check_height(driver))
+            old_height = driver.execute_script(
+                "return document.body.scrollHeight")
+            driver.execute_script(
+                "window.scrollTo(0, document.body.scrollHeight);")
+            WebDriverWait(driver, scroll_time, 0.05).until(
+                lambda driver: check_height(driver))
             current_scrolls += 1
         except TimeoutException:
             break
 
     return
+
 
 def check_height(driver):
     new_height = driver.execute_script("return document.body.scrollHeight")
