@@ -12,6 +12,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
+from Database.facebookPost import FacebookPost
 from Database.facebookUser import FacebookUser
 # -------------------------------------------------------------
 from Functions.common import extract_fb_username, is_timeline_layout
@@ -674,7 +675,8 @@ def start_scape(ids):
         # name = scrape_name(driver, isTimelineLayout)
         # followerNumber = scrape_follower(driver, id, isTimelineLayout)
         fbPosts = scrape_posts(driver, isTimelineLayout)
-        # print('post', fbPosts)
+        # print('post', "\n", fbPosts)
+
         # update DB
         # fbUsername = extract_fb_username(id)
         # FacebookUser.update_or_create(fbUsername, {
@@ -682,6 +684,7 @@ def start_scape(ids):
         #     'name': name,
         #     'profile_picture_url': profilePictureURL
         # })
+        FacebookPost.update_or_create_fbpost(fbPosts)
 
         print("----------------Done---------------------")
         # ----------------------------------------------------------------------------

@@ -9,7 +9,7 @@ old_height = 0
 
 
 def scrape_posts(driver, isTimelineLayout: bool):
-    
+
     scroll(driver)
 
     if isTimelineLayout:
@@ -18,7 +18,7 @@ def scrape_posts(driver, isTimelineLayout: bool):
         return extract_timeline_posts(elementPosts)
 
     else:
-        #need update
+        # need update
         return driver.find_elements_by_xpath('//div[@class="_4-u2 _4-u8"]')
 
 
@@ -30,10 +30,10 @@ def extract_timeline_posts(elements) -> list:
                 title = get_title(postElement)
                 time = get_time(postElement)
                 link = get_link(postElement)
-
+                # print(title, "\n")
                 postMessage = post_message(postElement)
                 postImage = post_image(postElement)
-                
+
                 likes = total_like(postElement)
                 loves = total_love(postElement)
                 hahas = total_haha(postElement)
@@ -51,7 +51,7 @@ def extract_timeline_posts(elements) -> list:
                 ]
                 posts.append(
                     [link, postMessage, postImage, time, title, reactions])
-                # print(time)
+
             except Exception as extractError:
                 print('extract loop: ', extractError)
         return posts
@@ -108,31 +108,6 @@ def post_image(element):
         return None
 
 
-# def get_status(x) -> str:
-#     try:
-#         status = x.find_element_by_xpath(".//div[@class='_5wj-']").text
-#     except NoSuchElementException:
-#         try:
-#             status = x.find_element_by_xpath(
-#                 ".//div[@class='userContent']").text
-#         except NoSuchElementException:
-#             pass
-#     return status
-
-
-def get_div_links(x, tag):
-    try:
-        temp = x.find_element_by_xpath(".//div[@class='_3x-2']")
-        return temp.find_element_by_tag_name(tag)
-    except NoSuchElementException:
-        return ""
-
-
-def get_title_links(title):
-    l = title.find_elements_by_tag_name('a')
-    return l[-1].text, l[-1].get_attribute('href')
-
-
 def get_title(x):
     title = ""
     try:
@@ -147,23 +122,22 @@ def get_title(x):
             except:
                 pass
     finally:
-        # if title.find("shared a memory") > 0:
-        #             postElement = postElement.find_element_by_xpath(
-        #                 ".//div[@class='_1dwg _1w_m']")
-        #             title = get_title(postElement)
         return title
 
 
-def get_time(x):
+def get_time(element):
     try:
-        # time = x.find_element_by_tag_name('abbr').get_attribute('title')
+        # time = element.find_element_by_tag_name('abbr').get_attribute('title')
         # time = str("%02d" % int(time.split(", ")[1].split()[1]), ) + "-" + str(
         #     ("%02d" % (int((list(calendar.month_abbr).index(time.split(", ")[1].split()[0][:3]))),))) + "-" + \
         #     time.split()[3] + " " + str("%02d" % int(time.split()[5].split(":")[0])) + ":" + str(
         #     time.split()[5].split(":")[1])
-        timestamp = x.find_element_by_tag_name('abbr').get_attribute('data-utime')
-        return datetime.utcfromtimestamp(timestamp).isoformat()
-        # return x.find_element_by_tag_name('abbr').get_attribute('data-utime') #timestamp
+        timestamp = element.find_element_by_tag_name(
+            'abbr').get_attribute('data-utime')
+        return timestamp
+        # print('time =', datetime.utcfromtimestamp(timestamp*1000).isoformat())
+        # return datetime.utcfromtimestamp(timestamp).isoformat()
+        # return element.find_element_by_tag_name('abbr').get_attribute('data-utime') #timestamp
     except:
         return ''
 
