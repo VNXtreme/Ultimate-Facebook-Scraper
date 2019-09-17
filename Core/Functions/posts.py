@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait
 
@@ -7,6 +9,7 @@ old_height = 0
 
 
 def scrape_posts(driver, isTimelineLayout: bool):
+    
     scroll(driver)
 
     if isTimelineLayout:
@@ -15,9 +18,8 @@ def scrape_posts(driver, isTimelineLayout: bool):
         return extract_timeline_posts(elementPosts)
 
     else:
+        #need update
         return driver.find_elements_by_xpath('//div[@class="_4-u2 _4-u8"]')
-
-    return 1
 
 
 def extract_timeline_posts(elements) -> list:
@@ -31,7 +33,7 @@ def extract_timeline_posts(elements) -> list:
 
                 postMessage = post_message(postElement)
                 postImage = post_image(postElement)
-
+                
                 likes = total_like(postElement)
                 loves = total_love(postElement)
                 hahas = total_haha(postElement)
@@ -48,8 +50,8 @@ def extract_timeline_posts(elements) -> list:
                     shares
                 ]
                 posts.append(
-                    [postMessage, postImage, time, title, link, reactions])
-                print(time, '\n')
+                    [link, postMessage, postImage, time, title, reactions])
+                # print(time)
             except Exception as extractError:
                 print('extract loop: ', extractError)
         return posts
@@ -159,8 +161,9 @@ def get_time(x):
         #     ("%02d" % (int((list(calendar.month_abbr).index(time.split(", ")[1].split()[0][:3]))),))) + "-" + \
         #     time.split()[3] + " " + str("%02d" % int(time.split()[5].split(":")[0])) + ":" + str(
         #     time.split()[5].split(":")[1])
-        
-        return x.find_element_by_tag_name('abbr').get_attribute('data-utime') #timestamp
+        timestamp = x.find_element_by_tag_name('abbr').get_attribute('data-utime')
+        return datetime.utcfromtimestamp(timestamp).isoformat()
+        # return x.find_element_by_tag_name('abbr').get_attribute('data-utime') #timestamp
     except:
         return ''
 
