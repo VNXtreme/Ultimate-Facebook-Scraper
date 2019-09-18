@@ -7,6 +7,6 @@ class BaseModel(Model):
     class Meta:
         database = mysql_db
 
-class Users(BaseModel):
-    name = CharField()
-    email = CharField()
+# class Users(BaseModel):
+#     name = CharField()
+#     email = CharField()
