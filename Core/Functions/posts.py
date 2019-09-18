@@ -8,18 +8,18 @@ scroll_time = 5
 old_height = 0
 
 
-def scrape_posts(driver, isTimelineLayout: bool):
-
-    scroll(driver)
-
+def scrape_posts(driver, fbUrl, isTimelineLayout: bool):
     if isTimelineLayout:
-        elementPosts = driver.find_elements_by_xpath(
-            '//div[@class="_5pcb _4b0l _2q8l"]')
+        scroll(driver)
+        elementPosts = driver.find_elements_by_xpath('//div[@class="_5pcb _4b0l _2q8l"]')
         return extract_timeline_posts(elementPosts)
 
     else:
+        driver.get(fbUrl + '/posts')
+        scroll(driver)
         # need update
-        return driver.find_elements_by_xpath('//div[@class="_4-u2 _4-u8"]')
+        elementPosts = driver.find_elements_by_xpath('//div[@class="_4-u2 _4-u8"]')
+        return extract_timeline_posts(elementPosts)
 
 
 def extract_timeline_posts(elements) -> list:
@@ -73,39 +73,61 @@ def get_link(driver) -> str:
 
 
 def total_like(element) -> str:
-    return element.find_element_by_xpath('.//span[@data-testid="UFI2TopReactions/tooltip_LIKE"]/a').get_attribute('aria-label')
+    try:
+        return element.find_element_by_xpath('.//span[@data-testid="UFI2TopReactions/tooltip_LIKE"]/a').get_attribute('aria-label')
+    except NoSuchElementException:
+        return ''
 
 
 def total_love(element) -> str:
-    return element.find_element_by_xpath('.//span[@data-testid="UFI2TopReactions/tooltip_LOVE"]/a').get_attribute('aria-label')
+    try:
+        return element.find_element_by_xpath('.//span[@data-testid="UFI2TopReactions/tooltip_LOVE"]/a').get_attribute('aria-label')
+    except NoSuchElementException:
+        return ''
 
 
 def total_haha(element) -> str:
-    return element.find_element_by_xpath('.//span[@data-testid="UFI2TopReactions/tooltip_HAHA"]/a').get_attribute('aria-label')
+    try:
+        return element.find_element_by_xpath('.//span[@data-testid="UFI2TopReactions/tooltip_HAHA"]/a').get_attribute('aria-label')
+    except NoSuchElementException:
+        return ''
 
 
 def total_reaction(element) -> str:
-    return element.find_element_by_xpath('.//span[@class="_3dlg"]/span/span').text
+    try:
+        return element.find_element_by_xpath('.//span[@class="_3dlg"]/span/span').text
+    except NoSuchElementException:
+        return ''
 
 
 def total_comment(element) -> str:
-    return element.find_element_by_xpath('.//a[@data-testid="UFI2CommentsCount/root"]').text
+    try:
+        return element.find_element_by_xpath('.//a[@data-testid="UFI2CommentsCount/root"]').text
+    except NoSuchElementException:
+        return ''
 
 
 def total_share(element) -> str:
-    return element.find_element_by_xpath('.//a[@data-testid="UFI2SharesCount/root"]').text
+    try:
+        return element.find_element_by_xpath('.//a[@data-testid="UFI2SharesCount/root"]').text
+    except NoSuchElementException:
+        return ''
+    
 
 
 def post_message(element) -> str:
-    return element.find_element_by_xpath('.//div[contains(@class, "_5pbx userContent")]').text
+    try:
+        return element.find_element_by_xpath('.//div[contains(@class, "_5pbx userContent")]').text
+    except NoSuchElementException:
+        return ''
 
 
-def post_image(element):
+def post_image(element) -> str:
     try:
         return element.find_element_by_xpath('.//div[@class="_3x-2"]').find_element_by_tag_name('img').get_attribute('src')
     except NoSuchElementException:
         # print("post_image error: " , e)
-        return None
+        return ''
 
 
 def get_title(x):
@@ -120,7 +142,7 @@ def get_title(x):
                 title = x.find_element_by_xpath(
                     ".//span[@class='fwn fcg']/span").text
             except:
-                pass
+                return ''
     finally:
         return title
 

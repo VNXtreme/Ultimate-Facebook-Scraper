@@ -646,9 +646,9 @@ def main():
 
 
 def start_scape(ids):
-    folder = os.path.join(os.getcwd(), "Data")
-    create_folder(folder)
-    os.chdir(folder)
+    # folder = os.path.join(os.getcwd(), "Data")
+    # create_folder(folder)
+    # os.chdir(folder)
 
     # execute for all profiles given in input.txt file
     for id in ids:
@@ -658,13 +658,13 @@ def start_scape(ids):
 
         print("\nScraping:", id)
 
-        try:
-            target_dir = os.path.join(folder, id.split('/')[-1])
-            create_folder(target_dir)
-            os.chdir(target_dir)
-        except:
-            print("Some error occurred in creating the profile directory.")
-            continue
+        # try:
+        #     target_dir = os.path.join(folder, id.split('/')[-1])
+        #     create_folder(target_dir)
+        #     os.chdir(target_dir)
+        # except:
+        #     print("Some error occurred in creating the profile directory.")
+        #     continue
 
         # ----------------------------------------------------------------------------
         print("----------------------------------------")
@@ -674,7 +674,7 @@ def start_scape(ids):
         # profilePictureURL = scrape_profile_picture(driver, isTimelineLayout)
         # name = scrape_name(driver, isTimelineLayout)
         # followerNumber = scrape_follower(driver, id, isTimelineLayout)
-        fbPosts = scrape_posts(driver, isTimelineLayout)
+        fbPosts = scrape_posts(driver, id, isTimelineLayout)
         # print('post', "\n", fbPosts)
 
         # update DB
