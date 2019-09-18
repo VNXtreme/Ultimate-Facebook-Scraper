@@ -155,7 +155,7 @@ def main():
 def start_scape(listFbUsername):
     # execute for all profiles given in input.txt file
     for fbUsername in listFbUsername:
-        driver.get(fbUsername)
+        driver.get(prefixUrl+fbUsername)
         url = driver.current_url
         fullUrl = create_original_link(url)
         
