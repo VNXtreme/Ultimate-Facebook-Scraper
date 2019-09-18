@@ -13,18 +13,17 @@ def scrape_posts(driver, fbUrl, isTimelineLayout: bool):
         scroll(driver)
         elementPosts = driver.find_elements_by_xpath(
             '//div[@class="_5pcb _4b0l _2q8l"]')
-        return extract_timeline_posts(elementPosts)
+        return extract_posts(elementPosts)
 
     else:
         driver.get(fbUrl + '/posts')
         scroll(driver)
-        # need update
-        elementPosts = driver.find_elements_by_xpath(
-            '//div[@class="_4-u2 _4-u8"]')
-        return extract_timeline_posts(elementPosts)
+        
+        elementPosts = driver.find_elements_by_xpath('//div[@id="pagelet_timeline_main_column"]//div[@class="_4-u2 _4-u8"]')
+        return extract_posts(elementPosts)
 
 
-def extract_timeline_posts(elements) -> list:
+def extract_posts(elements) -> list:
     try:
         posts = []
         for postElement in elements:
@@ -141,7 +140,10 @@ def get_title(element) -> str:
     try:
         return element.find_element_by_xpath(".//span[@class='fwb fcg']").text
     except:
-        return element.find_element_by_xpath(".//span[@class='fwn fcg']").text
+        try:
+            return element.find_element_by_xpath(".//span[@class='fwn fcg']").text
+        except:
+            return ''
 
 
 def get_time(element) -> str:
