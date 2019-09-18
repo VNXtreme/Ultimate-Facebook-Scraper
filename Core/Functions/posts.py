@@ -11,14 +11,16 @@ old_height = 0
 def scrape_posts(driver, fbUrl, isTimelineLayout: bool):
     if isTimelineLayout:
         scroll(driver)
-        elementPosts = driver.find_elements_by_xpath('//div[@class="_5pcb _4b0l _2q8l"]')
+        elementPosts = driver.find_elements_by_xpath(
+            '//div[@class="_5pcb _4b0l _2q8l"]')
         return extract_timeline_posts(elementPosts)
 
     else:
         driver.get(fbUrl + '/posts')
         scroll(driver)
         # need update
-        elementPosts = driver.find_elements_by_xpath('//div[@class="_4-u2 _4-u8"]')
+        elementPosts = driver.find_elements_by_xpath(
+            '//div[@class="_4-u2 _4-u8"]')
         return extract_timeline_posts(elementPosts)
 
 
@@ -63,13 +65,19 @@ def extract_timeline_posts(elements) -> list:
 
 
 def get_link(driver) -> str:
-    link = driver.find_element_by_tag_name(
+    prefix = 'https://www.facebook.com'
+    linkElement = driver.find_element_by_tag_name(
         'abbr').find_element_by_xpath(".//ancestor::a")
 
-    if link.get_attribute('ajaxify') is None:
-        return link.get_attribute('href')
+    # link = linkElement.get_attribute('ajaxify')
 
-    return link.get_attribute('ajaxify')
+    # if link is None:
+    link = linkElement.get_attribute('href')
+
+    if(link[0] == '/'):
+        link = prefix + link
+
+    return link
 
 
 def total_like(element) -> str:
@@ -112,7 +120,6 @@ def total_share(element) -> str:
         return element.find_element_by_xpath('.//a[@data-testid="UFI2SharesCount/root"]').text
     except NoSuchElementException:
         return ''
-    
 
 
 def post_message(element) -> str:
@@ -127,7 +134,7 @@ def post_image(element) -> str:
         return element.find_element_by_xpath('.//div[@class="_3x-2"]').find_element_by_tag_name('img').get_attribute('src')
     except NoSuchElementException:
         # print("post_image error: " , e)
-        return ''
+        return None
 
 
 def get_title(x):
