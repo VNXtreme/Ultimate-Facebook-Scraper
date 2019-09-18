@@ -17,6 +17,7 @@ from Database.facebookUser import FacebookUser
 # -------------------------------------------------------------
 from Functions.common import extract_fb_username, is_timeline_layout
 from Functions.follower import scrape_follower
+from Functions.like import scrape_like
 from Functions.name import scrape_name
 from Functions.posts import scrape_posts
 from Functions.profilePicture import scrape_profile_picture
@@ -167,6 +168,7 @@ def start_scape(listFbUsername):
         profilePictureURL = scrape_profile_picture(driver, isTimelineLayout)
         name = scrape_name(driver, isTimelineLayout)
         followerNumber = scrape_follower(driver, isTimelineLayout)
+        likeNumber = scrape_like(driver, isTimelineLayout)
         fbPosts = scrape_posts(driver, fullUrl, isTimelineLayout)
         # print('post', "\n", fbPosts)
 
@@ -174,6 +176,7 @@ def start_scape(listFbUsername):
         
         user = FacebookUser.update_or_create(fbUsername, {
             'followers': followerNumber,
+            'likes': likeNumber,
             'name': name,
             'profile_picture_url': profilePictureURL
         })
