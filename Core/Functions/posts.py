@@ -126,7 +126,7 @@ def post_message(element) -> str:
     try:
         return element.find_element_by_xpath('.//div[contains(@class, "_5pbx userContent")]').text
     except NoSuchElementException:
-        return ''
+        return None
 
 
 def post_image(element) -> str:
@@ -137,21 +137,14 @@ def post_image(element) -> str:
         return None
 
 
-def get_title(x):
-    title = ""
+def get_title(element) -> str:
     try:
-        title = x.find_element_by_xpath(".//span[@class='fwb fcg']/a").text
+        return element.find_element_by_xpath(".//span[@class='fwb fcg']/a").text
     except:
         try:
-            title = x.find_element_by_xpath(".//span[@class='fcg']/a").text
+            return element.find_element_by_xpath(".//span[@class='fwn fcg']/a").text
         except:
-            try:
-                title = x.find_element_by_xpath(
-                    ".//span[@class='fwn fcg']/span").text
-            except:
-                return ''
-    finally:
-        return title
+            return ''
 
 
 def get_time(element):
