@@ -178,7 +178,8 @@ def start_scape(listFbUsername):
             'followers': followerNumber,
             'likes': likeNumber,
             'name': name,
-            'profile_picture_url': profilePictureURL
+            'profile_picture_url': profilePictureURL,
+            'is_private': isTimelineLayout and 1 or 0
         })
         FacebookPost.update_or_create_fbpost(user.id, fbPosts)
 

@@ -15,6 +15,7 @@ class FacebookUser(BaseModel):
     is_verified = BooleanField()
     added_date = DateTimeField()
     is_featured = BooleanField()
+    is_private = BooleanField()
 
     @classmethod
     def update_or_create(cls, fbUsername: str, defaultsObject: object):
