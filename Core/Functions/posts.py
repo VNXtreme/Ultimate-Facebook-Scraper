@@ -139,15 +139,12 @@ def post_image(element) -> str:
 
 def get_title(element) -> str:
     try:
-        return element.find_element_by_xpath(".//span[@class='fwb fcg']/a").text
+        return element.find_element_by_xpath(".//span[@class='fwb fcg']").text
     except:
-        try:
-            return element.find_element_by_xpath(".//span[@class='fwn fcg']/a").text
-        except:
-            return ''
+        return element.find_element_by_xpath(".//span[@class='fwn fcg']").text
 
 
-def get_time(element):
+def get_time(element) -> str:
     try:
         # time = element.find_element_by_tag_name('abbr').get_attribute('title')
         # time = str("%02d" % int(time.split(", ")[1].split()[1]), ) + "-" + str(
@@ -186,58 +183,6 @@ def scroll(driver):
     return
 
 
-def check_height(driver):
+def check_height(driver) -> bool:
     new_height = driver.execute_script("return document.body.scrollHeight")
     return new_height != old_height
-
-
-##
-# if title.text == driver.find_element_by_id("fb-timeline-cover-name").text:
-#     if status == '':
-#         temp = get_div_links(x, "img")
-#         if temp == '':  # no image tag which means . it is not a life event
-#             link = get_div_links(x, "a").get_attribute('href')
-#             type = "status update without text"
-#         else:
-#             type = 'life event'
-#             link = get_div_links(x, "a").get_attribute('href')
-#             status = get_div_links(x, "a").text
-#     else:
-#         type = "status update"
-#         if get_div_links(x, "a") != '':
-#             link = get_div_links(x, "a").get_attribute('href')
-
-# elif title.text.find(" shared ") != -1:
-
-#     x1, link = get_title_links(title)
-#     type = "shared " + x1
-
-# elif title.text.find(" at ") != -1 or title.text.find(" in ") != -1:
-#     if title.text.find(" at ") != -1:
-#         x1, link = get_title_links(title)
-#         type = "check in"
-#     elif title.text.find(" in ") != 1:
-#         status = get_div_links(x, "a").text
-
-# elif title.text.find(" added ") != -1 and title.text.find("photo") != -1:
-#     type = "added photo"
-#     link = get_div_links(x, "a").get_attribute('href')
-
-# elif title.text.find(" added ") != -1 and title.text.find("video") != -1:
-#     type = "added video"
-#     link = get_div_links(x, "a").get_attribute('href')
-
-# else:
-#     type = "others"
-##
-
-# def timeline_layout_posts(driver):
-#     elementPosts = driver.find_elements_by_xpath('//div[@class="_5pcb _4b0l _2q8l"]')
-#     arrayPosts = extract_posts(elementPosts)
-#     print('arrayPosts', arrayPosts)
-#     return arrayPosts
-
-
-# def normal_layout_posts(driver):
-#     elementPosts = driver.find_elements_by_xpath('//div[@class="_4-u2 _4-u8"]')
-#     return
