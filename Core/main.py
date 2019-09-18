@@ -140,7 +140,7 @@ def main():
                 "Your email or password is missing. Kindly write them in credentials.txt")
             exit()
 
-    listFbUsername = [line for line in open("Input/input.txt", newline='\n')]
+    listFbUsername = [line.rstrip('\r\n') for line in open("Input/input.txt", newline='\r\n')]
     
     if len(listFbUsername) > 0:
         print("\nStarting Scraping...")
