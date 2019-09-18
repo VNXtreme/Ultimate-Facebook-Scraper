@@ -25,3 +25,5 @@ class FacebookUser(BaseModel):
             for key, value in defaultsObject.items():
                 setattr(user, key, value)
             user.save()
+
+        return user

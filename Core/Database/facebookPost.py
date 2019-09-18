@@ -3,12 +3,14 @@ from datetime import datetime
 from peewee import *
 
 from Database.db import BaseModel
+from Database.facebookPostInsight import facebookPostInsight
 
 
 class FacebookPost(BaseModel):
     class Meta:
         table_name = 'facebook_posts'
 
+    profile_id = IntegerField()
     title = TextField()
     link = TextField()
     message = TextField()
@@ -30,15 +32,20 @@ class FacebookPost(BaseModel):
                 setattr(post, key, value)
             post.updated_at = datetime.now()
             post.save()
+        
+        return post
 
     @classmethod
-    def update_or_create_fbpost(cls, fbPosts: list):
+    def update_or_create_fbpost(cls, userId: int, fbPosts: list):
         for post in fbPosts:
             link, postMessage, postImage, time, title, reactions = post
             # print(postMessage, "\n")
-            cls.update_or_create(link, {
+            facebookPost = cls.update_or_create(link, {
+                'profile_id': userId,
                 'title' : title,
                 'message' : postMessage,
                 'message_picture' : postImage,
                 'post_time' : time
             })
+
+            facebookPostInsight.update_or_create(facebookPost.id, reactions)

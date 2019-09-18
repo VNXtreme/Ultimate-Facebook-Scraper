@@ -2,15 +2,12 @@ from Database.facebookUser import FacebookUser
 from Functions.common import extract_fb_username, extract_follower_number
 
 
-def scrape_follower(driver, fbUrl: str, isTimelineLayout: bool) -> int:
-    driver.get(fbUrl)
-
+def scrape_follower(driver, isTimelineLayout: bool) -> int:
     if(isTimelineLayout):
-        element = driver.find_element_by_xpath("//div[@class='_6a _6b plm']/span")
-        followerNumber = element.text.split(' ', 1)[0].replace(',', '')
+        followerNumber = driver.find_element_by_xpath("//div[@class='_6a _6b plm']/span").text
     else:
-        element = driver.find_element_by_xpath("//div[@class='_1nq8  _2ieq']")
-        followerNumber = element.text.split(' ', 3)[2].replace(',', '')
-
+        followerNumber = driver.find_element_by_id('pages_side_column').find_element_by_xpath("//div[@class='_4-u2 _6590 _3xaf _4-u8']/div[3]").text
+    followerNumber = followerNumber.split(' ', 1)[0].replace(',', '').replace('.', '')
     print(f"Followers: {followerNumber}")
+
     return followerNumber

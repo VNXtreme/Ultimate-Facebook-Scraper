@@ -161,23 +161,23 @@ def start_scape(listFbUsername):
         
         print("\nScraping:", fbUsername)
         print("----------------------------------------")
-        isTimelineLayout = is_timeline_layout(driver)  # check layout
+        isTimelineLayout = is_timeline_layout(driver)  # check layout 
 
         # scrape
-        # profilePictureURL = scrape_profile_picture(driver, isTimelineLayout)
-        # name = scrape_name(driver, isTimelineLayout)
-        # followerNumber = scrape_follower(driver, id, isTimelineLayout)
+        profilePictureURL = scrape_profile_picture(driver, isTimelineLayout)
+        name = scrape_name(driver, isTimelineLayout)
+        followerNumber = scrape_follower(driver, isTimelineLayout)
         fbPosts = scrape_posts(driver, fullUrl, isTimelineLayout)
         # print('post', "\n", fbPosts)
 
         # update DB
-        # fbUsername = extract_fb_username(id)
-        # FacebookUser.update_or_create(fbUsername, {
-        #     'followers': followerNumber,
-        #     'name': name,
-        #     'profile_picture_url': profilePictureURL
-        # })
-        FacebookPost.update_or_create_fbpost(fbPosts)
+        
+        user = FacebookUser.update_or_create(fbUsername, {
+            'followers': followerNumber,
+            'name': name,
+            'profile_picture_url': profilePictureURL
+        })
+        FacebookPost.update_or_create_fbpost(user.id, fbPosts)
 
         print("----------------Done---------------------")
         # ----------------------------------------------------------------------------
