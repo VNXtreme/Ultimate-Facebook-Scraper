@@ -18,7 +18,7 @@ from Database.facebookUser import FacebookUser
 from Functions.common import extract_fb_username, is_timeline_layout
 from Functions.follower import scrape_follower
 from Functions.like import scrape_like
-from Functions.name import scrape_name
+from Functions.name import scrape_name, scrape_username
 from Functions.posts import scrape_posts
 from Functions.profilePicture import scrape_profile_picture
 
@@ -159,14 +159,23 @@ def start_scape(listFbUsername):
         driver.get(prefixUrl+fbUsername)
         url = driver.current_url
         fullUrl = create_original_link(url)
+
+        try:
+            driver.find_element_by_class_name('uiBoxWhite')
+            print(f'Page not exist: {fbUsername}')
+            print('-----Going to next page-----')
+            continue
+        except:
+            pass
         
         print("\nScraping:", fbUsername)
         print("----------------------------------------")
         isTimelineLayout = is_timeline_layout(driver)  # check layout 
 
         # scrape
-        profilePictureURL = scrape_profile_picture(driver, isTimelineLayout)
+        username = scrape_username(driver, isTimelineLayout)
         name = scrape_name(driver, isTimelineLayout)
+        profilePictureURL = scrape_profile_picture(driver, isTimelineLayout)
         followerNumber = scrape_follower(driver, isTimelineLayout)
         likeNumber = scrape_like(driver, isTimelineLayout)
         fbPosts = scrape_posts(driver, fullUrl, isTimelineLayout)
@@ -174,7 +183,7 @@ def start_scape(listFbUsername):
 
         # update DB
         
-        user = FacebookUser.update_or_create(fbUsername, {
+        user = FacebookUser.update_or_create(username, {
             'followers': followerNumber,
             'likes': likeNumber,
             'name': name,
