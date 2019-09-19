@@ -76,9 +76,10 @@ def get_link(driver) -> str:
 
     # if link is None:
     link = linkElement.get_attribute('href')
-    link = link.split('__xts__')[0][:-1]
-    if(link[0] == '/'):
-        link = prefix + link
+    # link = link.split('__xts__')[0][:-1]
+    # if(link[0] == '/'):
+    link = link.split('__xts__')[0][:-1] if link.find('__xts__') != -1 else link
+    link = (prefix + link) if link[0] == '/' else link
 
     return link
 
