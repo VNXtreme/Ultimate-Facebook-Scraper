@@ -16,7 +16,8 @@ def scrape_posts(driver, fbUrl, isTimelineLayout: bool):
         return extract_posts(elementPosts)
 
     else:
-        driver.get(fbUrl + '/posts')
+        postUrl = 'posts' if fbUrl[len(fbUrl)-1] == '/' else '/posts'
+        driver.get(fbUrl + postUrl)
         scroll(driver)
         
         elementPosts = driver.find_elements_by_xpath('//div[@id="pagelet_timeline_main_column"]//div[@class="_4-u2 _4-u8"]')
@@ -65,8 +66,11 @@ def extract_posts(elements) -> list:
 
 def get_link(driver) -> str:
     prefix = 'https://www.facebook.com'
-    linkElement = driver.find_element_by_tag_name(
-        'abbr').find_element_by_xpath(".//ancestor::a")
+    try:
+        linkElement = driver.find_element_by_tag_name('abbr').find_element_by_xpath(".//ancestor::a")
+    except NoSuchElementException:
+        return None
+
 
     # link = linkElement.get_attribute('ajaxify')
 
