@@ -160,16 +160,17 @@ def start_scape(listFbUsername):
         url = driver.current_url
         fullUrl = create_original_link(url)
 
+        print("----------------Start---------------------")
         try:
-            driver.find_element_by_class_name('uiBoxWhite')
+            driver.find_element_by_xpath('.//i[contains(@class, "uiHeaderImage img sp_x_Fw7oJs5KM")]')
             print(f'Page not exist: {fbUsername}')
-            print('-----Going to next page-----')
+            print('----------------Skip---------------------\n')
             continue
         except:
             pass
         
-        print("\nScraping:", fbUsername)
-        print("----------------------------------------")
+        
+        print(f"Scraping: {fbUsername}")
         isTimelineLayout = is_timeline_layout(driver)  # check layout 
 
         # scrape
@@ -192,7 +193,7 @@ def start_scape(listFbUsername):
         })
         FacebookPost.update_or_create_fbpost(user.id, fbPosts)
 
-        print("----------------Done---------------------")
+        print("----------------Done---------------------\n")
         # ----------------------------------------------------------------------------
 
     print("\nProcess Completed.")
