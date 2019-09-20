@@ -88,42 +88,42 @@ def total_like(element) -> str:
     try:
         return element.find_element_by_xpath('.//span[@data-testid="UFI2TopReactions/tooltip_LIKE"]/a').get_attribute('aria-label')
     except NoSuchElementException:
-        return ''
+        return 0
 
 
 def total_love(element) -> str:
     try:
         return element.find_element_by_xpath('.//span[@data-testid="UFI2TopReactions/tooltip_LOVE"]/a').get_attribute('aria-label')
     except NoSuchElementException:
-        return ''
+        return 0
 
 
 def total_haha(element) -> str:
     try:
         return element.find_element_by_xpath('.//span[@data-testid="UFI2TopReactions/tooltip_HAHA"]/a').get_attribute('aria-label')
     except NoSuchElementException:
-        return ''
+        return 0
 
 
 def total_reaction(element) -> str:
     try:
         return element.find_element_by_xpath('.//span[@class="_3dlg"]/span/span').text
     except NoSuchElementException:
-        return ''
+        return 0
 
 
 def total_comment(element) -> str:
     try:
         return element.find_element_by_xpath('.//a[@data-testid="UFI2CommentsCount/root"]').text
     except NoSuchElementException:
-        return ''
+        return 0
 
 
 def total_share(element) -> str:
     try:
         return element.find_element_by_xpath('.//a[@data-testid="UFI2SharesCount/root"]').text
     except NoSuchElementException:
-        return ''
+        return 0
 
 
 def post_message(element) -> str:
