@@ -141,8 +141,9 @@ def main():
                 "Your email or password is missing. Kindly write them in credentials.txt")
             exit()
 
-    listFbUsername = [line.rstrip('\r\n') for line in open("Input/input.txt", newline='\r\n')]
-    
+    listFbUsername = [line.rstrip('\r\n') for line in open(
+        "Input/input.txt", newline='\r\n')]
+
     if len(listFbUsername) > 0:
         print("\nStarting Scraping...")
 
@@ -153,6 +154,20 @@ def main():
         print("Input file is empty.")
 
 
+def check_page_existance(driver) -> bool:
+    try:
+        driver.find_element_by_xpath(
+            './/i[contains(@class, "uiHeaderImage img sp_x_Fw7oJs5KM")]')
+        return False
+    except NoSuchElementException:
+        try:
+            driver.find_element_by_xpath(
+                './/div[@class="pvl _4-do"]/h2[@class="_4-dp"]')
+            return False
+        except NoSuchElementException:
+            return True
+
+
 def start_scape(listFbUsername):
     # execute for all profiles given in input.txt file
     for fbUsername in listFbUsername:
@@ -161,17 +176,14 @@ def start_scape(listFbUsername):
         fullUrl = create_original_link(url)
 
         print("----------------Start---------------------")
-        try:
-            driver.find_element_by_xpath('.//i[contains(@class, "uiHeaderImage img sp_x_Fw7oJs5KM")]')
+        exist = check_page_existance(driver)
+        if not exist:
             print(f'Page not exist: {fbUsername}')
             print('----------------Skip---------------------\n')
             continue
-        except:
-            pass
-        
-        
+
         print(f"Scraping: {fbUsername}")
-        isTimelineLayout = is_timeline_layout(driver)  # check layout 
+        isTimelineLayout = is_timeline_layout(driver)  # check layout
 
         # scrape
         username = scrape_username(driver, isTimelineLayout)
@@ -183,7 +195,7 @@ def start_scape(listFbUsername):
         # print('post', "\n", fbPosts)
 
         # update DB
-        
+
         user = FacebookUser.update_or_create(username, {
             'followers': followerNumber,
             'likes': likeNumber,
