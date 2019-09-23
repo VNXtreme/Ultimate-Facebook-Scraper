@@ -17,6 +17,7 @@ from Database.facebookUser import FacebookUser
 # -------------------------------------------------------------
 from Functions.common import extract_fb_username, is_timeline_layout
 from Functions.follower import scrape_follower
+from Functions.isVerified import is_verified
 from Functions.like import scrape_like
 from Functions.name import scrape_name, scrape_username
 from Functions.posts import scrape_posts
@@ -157,7 +158,7 @@ def main():
 def check_page_existance(driver) -> bool:
     try:
         driver.find_element_by_xpath(
-            './/i[contains(@class, "uiHeaderImage img sp_x_Fw7oJs5KM")]')
+            './/i[contains(@class, "uiHeaderImage img")]')
         return False
     except NoSuchElementException:
         try:
@@ -187,12 +188,12 @@ def start_scape(listFbUsername):
 
         # scrape
         username = scrape_username(driver, isTimelineLayout)
+        isVerified = is_verified(driver, isTimelineLayout)
         name = scrape_name(driver, isTimelineLayout)
         profilePictureURL = scrape_profile_picture(driver, isTimelineLayout)
         followerNumber = scrape_follower(driver, isTimelineLayout)
         likeNumber = scrape_like(driver, isTimelineLayout)
-        fbPosts = scrape_posts(driver, fullUrl, isTimelineLayout)
-        # print('post', "\n", fbPosts)
+        # fbPosts = scrape_posts(driver, fullUrl, isTimelineLayout)
 
         # update DB
 
@@ -201,9 +202,10 @@ def start_scape(listFbUsername):
             'likes': likeNumber,
             'name': name,
             'profile_picture_url': profilePictureURL,
-            'is_private': isTimelineLayout and 1 or 0
+            'is_private': isTimelineLayout and 1 or 0,
+            'is_verified': isVerified
         })
-        FacebookPost.update_or_create_fbpost(user.id, fbPosts)
+        # FacebookPost.update_or_create_fbpost(user.id, fbPosts)
 
         print("----------------Done---------------------\n")
         # ----------------------------------------------------------------------------
