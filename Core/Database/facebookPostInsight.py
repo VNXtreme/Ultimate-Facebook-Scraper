@@ -46,8 +46,8 @@ class facebookPostInsight(BaseModel):
             'reaction_haha': hahas,
             'comments': comments,
             'shares': shares,
-            'reaction_number': reaction_string_to_number(total)
-            'comment_number': reaction_string_to_number(comments)
+            'reaction_number': reaction_string_to_number(total),
+            'comment_number': reaction_string_to_number(comments),
             'share_number': reaction_string_to_number(shares)
         }
 
