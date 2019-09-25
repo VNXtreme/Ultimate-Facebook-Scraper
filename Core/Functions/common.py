@@ -1,17 +1,16 @@
-def extract_fb_username(url):
-    return url.split("/")[-1]
+def reaction_string_to_number(text: str):
+    multiplier = 1
+    stringNumber = text.split(' ')[0].replace(',', '').replace('.', '')
+    hasK = stringNumber.find('K')
 
+    if(hasK != -1):
+        stringNumber = stringNumber.replace('K', '')
+        multiplier = 1000
 
-def extract_follower_number(text):
-    followerNumber = text.split(' ', 1)[0].replace(',', '')
-    return followerNumber
+    result = int(stringNumber) * multiplier
 
-def convert_string_to_number(text):
-    numberInString = text.split(' ')[0]
-    if numberInString.find('K'):
-        numberInString.replace('.', '').replace(',', '') 
-        numberInString = numberInString * 1000
-    return numberInString
+    return result
+
 
 def is_timeline_layout(driver):
     try:

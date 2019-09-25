@@ -1,5 +1,4 @@
 from Database.facebookUser import FacebookUser
-from Functions.common import extract_fb_username, extract_follower_number
 
 
 def scrape_follower(driver, isTimelineLayout: bool) -> int:

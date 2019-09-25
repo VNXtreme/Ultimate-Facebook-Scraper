@@ -3,6 +3,7 @@ from datetime import datetime
 from peewee import *
 
 from Database.db import BaseModel
+from Functions.common import reaction_string_to_number
 
 
 class facebookPostInsight(BaseModel):
@@ -27,6 +28,9 @@ class facebookPostInsight(BaseModel):
     reaction_wow = CharField(default=None)
     comments = CharField(default=None)
     shares = CharField(default=None)
+    reaction_number = IntegerField(default=0)
+    comment_number = IntegerField(default=0)
+    share_number = IntegerField(default=0)
     video_views = IntegerField(default=0)
     updated_at = DateTimeField()
     created_at = DateTimeField(default=datetime.now())
@@ -42,6 +46,9 @@ class facebookPostInsight(BaseModel):
             'reaction_haha': hahas,
             'comments': comments,
             'shares': shares,
+            'reaction_number': reaction_string_to_number(total)
+            'comment_number': reaction_string_to_number(comments)
+            'share_number': reaction_string_to_number(shares)
         }
 
         postInsight, created = cls.get_or_create(

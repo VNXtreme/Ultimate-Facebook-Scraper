@@ -15,7 +15,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from Database.facebookPost import FacebookPost
 from Database.facebookUser import FacebookUser
 # -------------------------------------------------------------
-from Functions.common import extract_fb_username, is_timeline_layout
+from Functions.common import is_timeline_layout
 from Functions.follower import scrape_follower
 from Functions.isVerified import is_verified
 from Functions.like import scrape_like
