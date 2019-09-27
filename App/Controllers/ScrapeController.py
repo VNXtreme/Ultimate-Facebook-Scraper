@@ -1,21 +1,21 @@
-import calendar
-import os
-import platform
-import sys
-import time
-import urllib.request
+# import calendar
+# import os
+# import platform
+# import sys
+# import time
+# import urllib.request
 
-from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
+# from selenium import webdriver
+# from selenium.common.exceptions import NoSuchElementException
+# from selenium.webdriver.chrome.options import Options
+# from selenium.webdriver.common.by import By
+# from selenium.webdriver.support import expected_conditions as EC
+# from selenium.webdriver.support.ui import WebDriverWait
 
-from App.Models.facebookPost import FacebookPost
+from App.Controllers.BaseController import BaseController
+# from App.Models.facebookPost import FacebookPost
 from App.Models.facebookUser import FacebookUser
 
-from .BaseController import BaseController
 # -------------------------------------------------------------
 from .Functions.common import is_timeline_layout
 from .Functions.follower import scrape_follower
@@ -29,7 +29,22 @@ from .Functions.profilePicture import scrape_profile_picture
 class ScrapeController(BaseController):
     PREFIX_URL = "https://en-gb.facebook.com/"
 
-    def run(self):
+    def run(self, listFbUsername=None):
+        if not listFbUsername:
+            listFbUsername = [line.rstrip('\r\n') for line in open(
+                "Input/input.txt", newline='\r\n')]
+
+        if len(listFbUsername) > 0:
+            print("\nStarting Scraping...")
+
+            self.login_facebook_on_browser()
+            self.scrape_elements(listFbUsername)
+            self.driver.close()
+            return 'Done'
+        else:
+            print("Input file is empty.")
+
+    def login_facebook_on_browser(self):
         with open('Input/credentials.txt') as f:
             email = f.readline().split('"')[1]
             password = f.readline().split('"')[1]
@@ -39,18 +54,7 @@ class ScrapeController(BaseController):
                     "Your email or password is missing. Kindly write them in credentials.txt")
                 exit()
 
-        listFbUsername = [line.rstrip('\r\n') for line in open(
-            "Input/input.txt", newline='\r\n')]
-
-        if len(listFbUsername) > 0:
-            print("\nStarting Scraping...")
-
-            self.login(email, password)
-            self.scrape_elements(listFbUsername)
-            self.driver.close()
-            return 'Done'
-        else:
-            print("Input file is empty.")
+        self.login(email, password)
 
 
     def scrape_elements(self, listFbUsername):
@@ -97,3 +101,9 @@ class ScrapeController(BaseController):
         print("\nProcess Completed.")
 
         return
+
+    def scrape_by_username(self, username):
+        listFbUsername = [username]
+        self.run(listFbUsername)
+        
+        return 'Done '+username
