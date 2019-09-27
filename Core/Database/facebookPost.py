@@ -2,7 +2,7 @@ from datetime import datetime
 
 from peewee import *
 
-from Database.db import BaseModel
+from Database.BaseModel import BaseModel
 from Database.facebookPostInsight import facebookPostInsight
 
 

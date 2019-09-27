@@ -1,6 +1,6 @@
 from peewee import *
 
-from Database.db import BaseModel
+from Database.BaseModel import BaseModel
 
 
 class FacebookUser(BaseModel):
