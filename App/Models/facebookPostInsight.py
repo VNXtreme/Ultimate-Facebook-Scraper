@@ -11,7 +11,7 @@ class facebookPostInsight(BaseModel):
     class Meta:
         table_name = 'facebook_post_insights'
 
-    facebookpost_id = IntegerField()
+    facebookpost_id = IntegerField(default=None)
     consumption_link_clicks = IntegerField(default=0)
     consumption_other_clicks = IntegerField(default=0)
     consumption_photo_view = IntegerField(default=0)
@@ -33,7 +33,7 @@ class facebookPostInsight(BaseModel):
     comment_number = IntegerField(default=0)
     share_number = IntegerField(default=0)
     video_views = IntegerField(default=0)
-    updated_at = DateTimeField()
+    updated_at = DateTimeField(default=None)
     created_at = DateTimeField(default=datetime.now())
 
     @classmethod

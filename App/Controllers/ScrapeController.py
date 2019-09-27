@@ -13,7 +13,7 @@
 # from selenium.webdriver.support.ui import WebDriverWait
 
 from App.Controllers.BaseController import BaseController
-# from App.Models.facebookPost import FacebookPost
+from App.Models.facebookPost import FacebookPost
 from App.Models.facebookUser import FacebookUser
 
 # -------------------------------------------------------------
@@ -83,7 +83,7 @@ class ScrapeController(BaseController):
             profilePictureURL = scrape_profile_picture(self.driver, isTimelineLayout)
             followerNumber = scrape_follower(self.driver, isTimelineLayout)
             likeNumber = scrape_like(self.driver, isTimelineLayout)
-            # fbPosts = scrape_posts(self.driver, fullUrl, isTimelineLayout)
+            fbPosts = scrape_posts(self.driver, fullUrl, isTimelineLayout)
 
             # update DB
 
@@ -95,7 +95,7 @@ class ScrapeController(BaseController):
                 'is_private': isTimelineLayout and 1 or 0,
                 'is_verified': isVerified
             })
-            # FacebookPost.update_or_create_fbpost(user.id, fbPosts)
+            FacebookPost.update_or_create_fbpost(user.id, fbPosts)
 
             print("----------------Done---------------------\n")
             # ----------------------------------------------------------------------------
