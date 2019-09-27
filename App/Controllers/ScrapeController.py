@@ -31,8 +31,7 @@ class ScrapeController(BaseController):
 
     def run(self, listFbUsername=None):
         if not listFbUsername:
-            listFbUsername = [line.rstrip('\r\n') for line in open(
-                "Input/input.txt", newline='\r\n')]
+            listFbUsername = self.list_fb_username_from_file()
 
         if len(listFbUsername) > 0:
             print("\nStarting Scraping...")
@@ -43,6 +42,9 @@ class ScrapeController(BaseController):
             return 'Done'
         else:
             print("Input file is empty.")
+    
+    def list_fb_username_from_file(self) -> list:
+        return [line.rstrip('\r\n') for line in open("Input/input.txt", newline='\r\n')]
 
     def login_facebook_on_browser(self):
         with open('Input/credentials.txt') as f:
@@ -105,5 +107,5 @@ class ScrapeController(BaseController):
     def scrape_by_username(self, username):
         listFbUsername = [username]
         self.run(listFbUsername)
-        
+
         return 'Done '+username
