@@ -3,7 +3,7 @@ from datetime import datetime
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait
 
-total_scrolls = 10
+total_scrolls = 5
 scroll_time = 5
 old_height = 0
 
@@ -135,10 +135,14 @@ def post_message(element) -> str:
 
 def post_image(element) -> str:
     try:
-        return element.find_element_by_xpath('.//div[@class="_3x-2"]//img[contains(@class,"img")]').get_attribute('src')
+        # return element.find_element_by_xpath('.//div[@class="_3x-2"]//img[contains(@class,"img")]').get_attribute('src')
+        return element.find_element_by_xpath('.//img[@class="_3chq"]').get_attribute('src')
     except NoSuchElementException:
-        # print("post_image error: " , e)
-        return None
+        print('false image')
+        try:
+            return element.find_element_by_xpath('.//div[@class="_3x-2"]//img[contains(@class,"img")]').get_attribute('src')
+        except NoSuchElementException:
+            return None
 
 
 def get_title(element) -> str:
