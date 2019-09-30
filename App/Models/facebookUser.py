@@ -14,6 +14,7 @@ class FacebookUser(BaseModel):
     profile_picture_url = CharField()
     likes = IntegerField()
     followers = IntegerField()
+    gender = CharField()
     is_verified = BooleanField()
     added_date = DateTimeField()
     is_featured = BooleanField()

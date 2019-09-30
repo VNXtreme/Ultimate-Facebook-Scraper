@@ -3,6 +3,8 @@ from datetime import datetime
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait
 
+from App.Controllers.Functions.common import safely_generate_url
+
 total_scrolls = 2
 scroll_time = 5
 old_height = 0
@@ -16,11 +18,13 @@ def scrape_posts(driver, fbUrl, isTimelineLayout: bool):
         return extract_posts(elementPosts)
 
     else:
-        postUrl = 'posts' if fbUrl[len(fbUrl)-1] == '/' else '/posts'
-        driver.get(fbUrl + postUrl)
+        # postUrl = 'posts' if fbUrl[len(fbUrl)-1] == '/' else '/posts'
+        newUrl = safely_generate_url(fbUrl, 'posts')
+        driver.get(newUrl)
         scroll(driver)
-        
-        elementPosts = driver.find_elements_by_xpath('//div[@id="pagelet_timeline_main_column"]//div[@class="_4-u2 _4-u8"]')
+
+        elementPosts = driver.find_elements_by_xpath(
+            '//div[@id="pagelet_timeline_main_column"]//div[@class="_4-u2 _4-u8"]')
         return extract_posts(elementPosts)
 
 
@@ -67,10 +71,10 @@ def extract_posts(elements) -> list:
 def get_link(driver) -> str:
     prefix = 'https://www.facebook.com'
     try:
-        linkElement = driver.find_element_by_tag_name('abbr').find_element_by_xpath(".//ancestor::a")
+        linkElement = driver.find_element_by_tag_name(
+            'abbr').find_element_by_xpath(".//ancestor::a")
     except NoSuchElementException:
         return None
-
 
     # link = linkElement.get_attribute('ajaxify')
 
@@ -78,7 +82,8 @@ def get_link(driver) -> str:
     link = linkElement.get_attribute('href')
     # link = link.split('__xts__')[0][:-1]
     # if(link[0] == '/'):
-    link = link.split('__xts__')[0][:-1] if link.find('__xts__') != -1 else link
+    link = link.split('__xts__')[
+        0][:-1] if link.find('__xts__') != -1 else link
     link = (prefix + link) if link[0] == '/' else link
 
     return link
