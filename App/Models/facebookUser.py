@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from peewee import *
 
 from .BaseModel import BaseModel
@@ -16,6 +18,8 @@ class FacebookUser(BaseModel):
     added_date = DateTimeField()
     is_featured = BooleanField()
     is_private = BooleanField()
+    updated_at = DateTimeField()
+    created_at = DateTimeField(default=datetime.now())
 
     @classmethod
     def update_or_create(cls, fbUsername: str, defaultsObject: object):
@@ -25,6 +29,7 @@ class FacebookUser(BaseModel):
         if not created:
             for key, value in defaultsObject.items():
                 setattr(user, key, value)
+                user.updated_at = datetime.now()
             user.save()
 
         return user
