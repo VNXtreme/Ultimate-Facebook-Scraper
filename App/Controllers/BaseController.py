@@ -104,7 +104,11 @@ class BaseController():
             self.driver.find_element_by_name('pass').send_keys(password)
 
             # clicking on login button
-            self.driver.find_element_by_id('loginbutton').click()
+            try:
+                self.driver.find_element_by_xpath(
+                    '//button[@name="login"]').click()
+            except NoSuchElementException:
+                self.driver.find_element_by_id('loginbutton').click()
 
             # if your account uses multi factor authentication
             mfa_code_input = self.safe_find_element_by_id(
