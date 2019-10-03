@@ -193,7 +193,7 @@ def start_scape(listFbUsername):
         profilePictureURL = scrape_profile_picture(driver, isTimelineLayout)
         followerNumber = scrape_follower(driver, isTimelineLayout)
         likeNumber = scrape_like(driver, isTimelineLayout)
-        # fbPosts = scrape_posts(driver, fullUrl, isTimelineLayout)
+        fbPosts = scrape_posts(driver, fullUrl, isTimelineLayout)
 
         # update DB
 
@@ -205,7 +205,7 @@ def start_scape(listFbUsername):
             'is_private': isTimelineLayout and 1 or 0,
             'is_verified': isVerified
         })
-        # FacebookPost.update_or_create_fbpost(user.id, fbPosts)
+        FacebookPost.update_or_create_fbpost(user.id, fbPosts)
 
         print("----------------Done---------------------\n")
         # ----------------------------------------------------------------------------
