@@ -84,10 +84,12 @@ class ScrapeController(BaseController):
             profilePictureURL = scrape_profile_picture(self.driver, isTimelineLayout)
             followerNumber = scrape_follower(self.driver, isTimelineLayout)
             likeNumber = scrape_like(self.driver, isTimelineLayout)
-            gender = scrape_gender(self.driver, fullUrl, isTimelineLayout)
-            print(gender)
+            
             fbPosts = scrape_posts(self.driver, fullUrl, isTimelineLayout)
 
+            gender = scrape_gender(self.driver, fullUrl, isTimelineLayout)
+            # print(gender)
+            
             user = FacebookUser.update_or_create(username, {
                 'followers': followerNumber,
                 'likes': likeNumber,
