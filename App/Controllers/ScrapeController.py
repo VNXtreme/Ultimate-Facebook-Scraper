@@ -19,7 +19,7 @@ from App.Models.facebookUser import FacebookUser
 # -------------------------------------------------------------
 from .Functions.common import is_timeline_layout
 from .Functions.follower import scrape_follower
-from .Functions.info import scrape_gender
+from .Functions.info import scrape_biology, scrape_gender
 from .Functions.isVerified import is_verified
 from .Functions.like import scrape_like
 from .Functions.name import scrape_name, scrape_username
@@ -63,7 +63,7 @@ class ScrapeController(BaseController):
         # execute for all profiles given in input.txt file
         for index, fbUsername in enumerate(listFbUsername):
             # STOP if too many profile
-            if (index > 150):
+            if index > 150:
                 print('Over 150 profiles. Exit.')
                 break
 
@@ -85,21 +85,20 @@ class ScrapeController(BaseController):
             username = scrape_username(self.driver, isTimelineLayout)
             isVerified = is_verified(self.driver, isTimelineLayout)
             name = scrape_name(self.driver, isTimelineLayout)
-            profilePictureURL = scrape_profile_picture(
-                self.driver, isTimelineLayout)
+            profilePictureURL = scrape_profile_picture(self.driver, isTimelineLayout)
             followerNumber = scrape_follower(self.driver, isTimelineLayout)
             likeNumber = scrape_like(self.driver, isTimelineLayout)
+            biology = scrape_biology(self.driver, fullUrl, isTimelineLayout)
+            gender = scrape_gender(self.driver, fullUrl, isTimelineLayout)
 
             fbPosts = scrape_posts(self.driver, fullUrl, isTimelineLayout)
-
-            gender = scrape_gender(self.driver, fullUrl, isTimelineLayout)
-            # print(gender)
 
             user = FacebookUser.update_or_create(username, {
                 'followers': followerNumber,
                 'likes': likeNumber,
                 'name': name,
                 'gender': gender,
+                'biology': biology,
                 'profile_picture_url': profilePictureURL,
                 'is_private': isTimelineLayout and 1 or 0,
                 'is_verified': isVerified

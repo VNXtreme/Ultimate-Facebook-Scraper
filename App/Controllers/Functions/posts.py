@@ -12,13 +12,13 @@ old_height = 0
 
 def scrape_posts(driver, fbUrl, isTimelineLayout: bool):
     if isTimelineLayout:
+        driver.get(fbUrl)
         scroll(driver)
         elementPosts = driver.find_elements_by_xpath(
             '//div[@class="_5pcb _4b0l _2q8l"]')
         return extract_posts(elementPosts)
 
     else:
-        # postUrl = 'posts' if fbUrl[len(fbUrl)-1] == '/' else '/posts'
         newUrl = safely_generate_url(fbUrl, 'posts')
         driver.get(newUrl)
         scroll(driver)
