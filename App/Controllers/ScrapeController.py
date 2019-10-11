@@ -19,7 +19,8 @@ from App.Models.facebookUser import FacebookUser
 # -------------------------------------------------------------
 from .Functions.common import is_timeline_layout
 from .Functions.follower import scrape_follower
-from .Functions.info import scrape_about, scrape_biology, scrape_gender
+from .Functions.info import (scrape_about, scrape_biology, scrape_gender,
+                             scrape_location)
 from .Functions.isVerified import is_verified
 from .Functions.like import scrape_like
 from .Functions.name import scrape_name, scrape_username
@@ -91,7 +92,8 @@ class ScrapeController(BaseController):
             biology = scrape_biology(self.driver, fullUrl, isTimelineLayout)
             about = scrape_about(self.driver, fullUrl, isTimelineLayout)
             gender = scrape_gender(self.driver, fullUrl, isTimelineLayout)
-            print(about)
+            location = scrape_location(self.driver, fullUrl, isTimelineLayout)
+            print(location)
             fbPosts = scrape_posts(self.driver, fullUrl, isTimelineLayout)
 
             user = FacebookUser.update_or_create(username, {
@@ -101,6 +103,7 @@ class ScrapeController(BaseController):
                 'gender': gender,
                 'biology': biology,
                 'about': about,
+                'location': location,
                 'profile_picture_url': profilePictureURL,
                 'is_private': isTimelineLayout and 1 or 0,
                 'is_verified': isVerified

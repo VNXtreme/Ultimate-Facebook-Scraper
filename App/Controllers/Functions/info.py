@@ -16,7 +16,8 @@ def scrape_gender(driver, fullUrl, isTimelineLayout):
 
 def scrape_biology(driver, fullUrl, isTimelineLayout):
     navigateUrl = safely_generate_url(fullUrl, 'about?section=bio')
-    driver.get(navigateUrl)
+    if driver.current_url != navigateUrl:
+        driver.get(navigateUrl)
 
     try:
         if isTimelineLayout:
@@ -33,7 +34,8 @@ def scrape_biology(driver, fullUrl, isTimelineLayout):
 
 def scrape_about(driver, fullUrl, isTimelineLayout):
     navigateUrl = safely_generate_url(fullUrl, 'about?section=bio')
-    driver.get(navigateUrl)
+    if driver.current_url != navigateUrl:
+        driver.get(navigateUrl)
 
     try:
         if isTimelineLayout:
@@ -45,5 +47,25 @@ def scrape_about(driver, fullUrl, isTimelineLayout):
                 return driver.find_element_by_xpath('//div[@id="pagelet_bio"]//ul/li').text
         else:
             return driver.find_element_by_xpath('//div[@class="_1xnd"]//*[contains(text(), "Giới thiệu")]//following-sibling::div').text
+    except:
+        return None
+
+def scrape_location(driver, fullUrl, isTimelineLayout):
+    navigateUrl = safely_generate_url(fullUrl, 'about?section=living')
+
+    if driver.current_url != navigateUrl:
+        driver.get(navigateUrl)
+
+    try:
+        if isTimelineLayout:
+            try:
+                return driver.find_element_by_xpath('//li[@id="current_city"]//span[@class="_2iel _50f7"]').text
+            except:
+                return driver.find_element_by_xpath('//li[@id="hometown"]//span[@class="_2iel _50f7"]').text
+        else:
+            try:
+                return driver.find_element_by_xpath('//div[@class="_1xnd"]//*[contains(text(), "Vị trí hiện tại")]//following-sibling::div').text
+            except:
+                return driver.find_element_by_xpath('//div[@class="_1xnd"]//*[contains(text(), "Quê quán")]//following-sibling::div').text
     except:
         return None

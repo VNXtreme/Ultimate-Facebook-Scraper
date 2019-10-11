@@ -17,6 +17,7 @@ class FacebookUser(BaseModel):
     gender = CharField()
     biology = TextField()
     about = TextField()
+    location = CharField()
     is_verified = BooleanField()
     added_date = DateTimeField()
     is_featured = BooleanField()
