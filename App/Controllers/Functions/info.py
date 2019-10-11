@@ -21,13 +21,29 @@ def scrape_biology(driver, fullUrl, isTimelineLayout):
     try:
         if isTimelineLayout:
             try:
-                # if element exist, no biology info
                 driver.find_element_by_xpath(
-                    '//div[@id="pagelet_bio"]//ul/li/span[@class="_50f8 _2iem"]').text
+                    '//div[@id="pagelet_bio"]//ul/li/span[@class="_50f8 _2iem"]').text # if element exist, no biology info
                 return None
             except:
                 return driver.find_element_by_xpath('//div[@id="pagelet_bio"]//ul/li').text
         else:
             return driver.find_element_by_xpath('//*[contains(text(), "Tiểu sử")]//following-sibling::div').text
+    except:
+        return None
+
+def scrape_about(driver, fullUrl, isTimelineLayout):
+    navigateUrl = safely_generate_url(fullUrl, 'about?section=bio')
+    driver.get(navigateUrl)
+
+    try:
+        if isTimelineLayout:
+            try:
+                driver.find_element_by_xpath(
+                    '//div[@id="pagelet_bio"]//ul/li/span[@class="_50f8 _2iem"]').text # if element exist, no biology info
+                return None
+            except:
+                return driver.find_element_by_xpath('//div[@id="pagelet_bio"]//ul/li').text
+        else:
+            return driver.find_element_by_xpath('//div[@class="_1xnd"]//*[contains(text(), "Giới thiệu")]//following-sibling::div').text
     except:
         return None

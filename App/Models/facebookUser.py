@@ -16,6 +16,7 @@ class FacebookUser(BaseModel):
     followers = IntegerField()
     gender = CharField()
     biology = TextField()
+    about = TextField()
     is_verified = BooleanField()
     added_date = DateTimeField()
     is_featured = BooleanField()
