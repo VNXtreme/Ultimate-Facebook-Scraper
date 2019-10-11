@@ -43,7 +43,7 @@ class ScrapeController(BaseController):
             return 'Done'
         else:
             print("Input file is empty.")
-    
+
     def list_fb_username_from_file(self) -> list:
         return [line.rstrip('\r\n') for line in open("Input/input.txt", newline='\r\n')]
 
@@ -61,11 +61,11 @@ class ScrapeController(BaseController):
 
     def scrape_elements(self, listFbUsername):
         # execute for all profiles given in input.txt file
-        for fbUsername, index in enumerate(listFbUsername):
-            #STOP if too many profile
-            if index > 150:
+        for index, fbUsername in enumerate(listFbUsername):
+            # STOP if too many profile
+            if (index > 150):
                 print('Over 150 profiles. Exit.')
-                break;
+                break
 
             self.driver.get(self.PREFIX_URL + fbUsername)
             url = self.driver.current_url
@@ -85,15 +85,16 @@ class ScrapeController(BaseController):
             username = scrape_username(self.driver, isTimelineLayout)
             isVerified = is_verified(self.driver, isTimelineLayout)
             name = scrape_name(self.driver, isTimelineLayout)
-            profilePictureURL = scrape_profile_picture(self.driver, isTimelineLayout)
+            profilePictureURL = scrape_profile_picture(
+                self.driver, isTimelineLayout)
             followerNumber = scrape_follower(self.driver, isTimelineLayout)
             likeNumber = scrape_like(self.driver, isTimelineLayout)
-            
+
             fbPosts = scrape_posts(self.driver, fullUrl, isTimelineLayout)
 
             gender = scrape_gender(self.driver, fullUrl, isTimelineLayout)
             # print(gender)
-            
+
             user = FacebookUser.update_or_create(username, {
                 'followers': followerNumber,
                 'likes': likeNumber,
