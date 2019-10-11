@@ -59,10 +59,14 @@ class ScrapeController(BaseController):
 
         self.login(email, password)
 
-
     def scrape_elements(self, listFbUsername):
         # execute for all profiles given in input.txt file
-        for fbUsername in listFbUsername:
+        for fbUsername, index in enumerate(listFbUsername):
+            #STOP if too many profile
+            if index > 150:
+                print('Over 150 profiles. Exit.')
+                break;
+
             self.driver.get(self.PREFIX_URL + fbUsername)
             url = self.driver.current_url
             fullUrl = self.create_original_link(url)
