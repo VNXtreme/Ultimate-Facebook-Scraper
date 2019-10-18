@@ -25,7 +25,7 @@ class facebookPostInsight(BaseModel):
     reaction_haha = CharField(default=None)
     reaction_like = CharField(default=None)
     reaction_love = CharField(default=None)
-    reaction_sorry = CharField(default=None)
+    reaction_sad = CharField(default=None)
     reaction_wow = CharField(default=None)
     comments = CharField(default=None)
     shares = CharField(default=None)
@@ -38,13 +38,16 @@ class facebookPostInsight(BaseModel):
 
     @classmethod
     def update_or_create(cls, facebookpostId: str, reactions: list):
-        likes, loves, hahas, total, comments, shares = reactions
+        likes, loves, hahas, wows, sads, angers, total, comments, shares = reactions
 
         defaultsObject = {
             'reaction': total,
             'reaction_like': likes,
             'reaction_love': loves,
             'reaction_haha': hahas,
+            'reaction_wow': wows,
+            'reaction_sad': sads,
+            'reaction_anger': angers,
             'comments': comments,
             'shares': shares
             # 'reaction_number': reaction_string_to_number(total),

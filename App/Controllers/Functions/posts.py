@@ -1,6 +1,8 @@
 from datetime import datetime
 
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 from App.Controllers.Functions.common import safely_generate_url
@@ -16,7 +18,7 @@ def scrape_posts(driver, fbUrl, isTimelineLayout: bool):
         scroll(driver)
         elementPosts = driver.find_elements_by_xpath(
             '//div[@class="_5pcb _4b0l _2q8l"]')
-        return extract_posts(elementPosts)
+        return extract_posts(elementPosts, driver)
 
     else:
         newUrl = safely_generate_url(fbUrl, 'posts')
@@ -25,10 +27,10 @@ def scrape_posts(driver, fbUrl, isTimelineLayout: bool):
 
         elementPosts = driver.find_elements_by_xpath(
             '//div[@id="pagelet_timeline_main_column"]//div[@class="_4-u2 _4-u8"]')
-        return extract_posts(elementPosts)
+        return extract_posts(elementPosts, driver)
 
 
-def extract_posts(elements) -> list:
+def extract_posts(elements, driver) -> list:
     try:
         posts = []
         for postElement in elements:
@@ -36,21 +38,30 @@ def extract_posts(elements) -> list:
                 title = get_title(postElement)
                 time = get_time(postElement)
                 link = get_link(postElement)
-                # print(title, "\n")
+                
                 postMessage = post_message(postElement)
                 postImage = post_image(postElement)
 
-                likes = total_like(postElement)
-                loves = total_love(postElement)
-                hahas = total_haha(postElement)
                 totalReaction = total_reaction(postElement)
                 comments = total_comment(postElement)
                 shares = total_share(postElement)
-
+                
+                open_reaction_popup(postElement, driver)
+                likes = total_like(driver)
+                loves = total_love(driver)
+                hahas = total_haha(driver)
+                wows = total_wow(driver)
+                sads = total_sad(driver)
+                angers = total_anger(driver)
+                print(likes, loves, hahas, wows, sads, angers)
+                close_reaction_popup(postElement, driver)
                 reactions = [
                     likes,
                     loves,
                     hahas,
+                    wows,
+                    sads,
+                    angers,
                     totalReaction,
                     comments,
                     shares
@@ -87,28 +98,6 @@ def get_link(driver) -> str:
     link = (prefix + link) if link[0] == '/' else link
 
     return link
-
-
-def total_like(element) -> str:
-    try:
-        return element.find_element_by_xpath('.//span[@data-testid="UFI2TopReactions/tooltip_LIKE"]/a').get_attribute('aria-label')
-    except NoSuchElementException:
-        return 0
-
-
-def total_love(element) -> str:
-    try:
-        return element.find_element_by_xpath('.//span[@data-testid="UFI2TopReactions/tooltip_LOVE"]/a').get_attribute('aria-label')
-    except NoSuchElementException:
-        return 0
-
-
-def total_haha(element) -> str:
-    try:
-        return element.find_element_by_xpath('.//span[@data-testid="UFI2TopReactions/tooltip_HAHA"]/a').get_attribute('aria-label')
-    except NoSuchElementException:
-        return 0
-
 
 def total_reaction(element) -> str:
     try:
@@ -160,17 +149,9 @@ def get_title(element) -> str:
 
 def get_time(element) -> str:
     try:
-        # time = element.find_element_by_tag_name('abbr').get_attribute('title')
-        # time = str("%02d" % int(time.split(", ")[1].split()[1]), ) + "-" + str(
-        #     ("%02d" % (int((list(calendar.month_abbr).index(time.split(", ")[1].split()[0][:3]))),))) + "-" + \
-        #     time.split()[3] + " " + str("%02d" % int(time.split()[5].split(":")[0])) + ":" + str(
-        #     time.split()[5].split(":")[1])
         timestamp = element.find_element_by_tag_name(
             'abbr').get_attribute('data-utime')
         return timestamp
-        # print('time =', datetime.utcfromtimestamp(timestamp*1000).isoformat())
-        # return datetime.utcfromtimestamp(timestamp).isoformat()
-        # return element.find_element_by_tag_name('abbr').get_attribute('data-utime') #timestamp
     except:
         return ''
 
@@ -200,3 +181,59 @@ def scroll(driver):
 def check_height(driver) -> bool:
     new_height = driver.execute_script("return document.body.scrollHeight")
     return new_height != old_height
+
+
+def open_reaction_popup(element, driver):
+    try:
+        element.find_element_by_xpath('.//span[@class="_1n9r _66lh"]/span/a')
+        WebDriverWait(driver, 2).until(EC.invisibility_of_element_located((By.XPATH, '//span[@class="_1n9r _66lh"]/span/a')))
+    except:
+        pass
+
+    popupElement = element.find_element_by_xpath('.//span[@class="_1n9r _66lh"]/span/a')
+    driver.execute_script("arguments[0].click();", popupElement)
+    WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, '//div[@class="_59s7"]//div[@class="_4-i2 _50f4"]//ul[@class="_43o4 _4470"]')))
+    
+
+def total_like(element) -> str:
+    try:
+        return element.find_element_by_xpath('//div[@class="_59s7"]//div[@class="_4-i2 _50f4"]//ul[@class="_43o4 _4470"]//i[contains(@class,"sx_4bea19")]/ancestor::a[@class="_3m1v _468f"]').text
+    except NoSuchElementException:
+        return 0
+
+def total_haha(element) -> str:
+    try:
+        return element.find_element_by_xpath('//div[@class="_59s7"]//div[@class="_4-i2 _50f4"]//ul[@class="_43o4 _4470"]//i[contains(@class,"sx_a2950f")]/ancestor::a[@class="_3m1v _468f"]').text
+    except NoSuchElementException:
+        return 0
+
+def total_sad(element) -> str:
+    try:
+        return element.find_element_by_xpath('//div[@class="_59s7"]//div[@class="_4-i2 _50f4"]//ul[@class="_43o4 _4470"]//i[contains(@class,"sx_a096e3")]/ancestor::a[@class="_3m1v _468f"]').text
+    except NoSuchElementException:
+        return 0
+
+def total_anger(element) -> str:
+    try:
+        return element.find_element_by_xpath('//div[@class="_59s7"]//div[@class="_4-i2 _50f4"]//ul[@class="_43o4 _4470"]//i[contains(@class,"sx_84f78e")]/ancestor::a[@class="_3m1v _468f"]').text
+    except NoSuchElementException:
+        return 0
+
+def total_wow(element) -> str:
+    try:
+        return element.find_element_by_xpath('//div[@class="_59s7"]//div[@class="_4-i2 _50f4"]//ul[@class="_43o4 _4470"]//i[contains(@class,"sx_554255")]/ancestor::a[@class="_3m1v _468f"]').text
+    except NoSuchElementException:
+        return 0
+
+def total_love(element) -> str:
+    try:
+        return element.find_element_by_xpath('//div[@class="_59s7"]//div[@class="_4-i2 _50f4"]//ul[@class="_43o4 _4470"]//i[contains(@class,"sx_fadf3e")]/ancestor::a[@class="_3m1v _468f"]').text
+    except NoSuchElementException:
+        return 0
+
+def close_reaction_popup(element, driver):
+    WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.CLASS_NAME, 'layerCancel')))
+    popupCloseButton = element.find_element_by_xpath('//div[@class="_59s7"]//*[contains(@class,"layerCancel")]')
+    driver.execute_script("arguments[0].click();", popupCloseButton)
+    WebDriverWait(driver, 20).until(EC.invisibility_of_element_located((By.XPATH, '//div[@class="_59s7"]//*[contains(@class,"layerCancel")]')))
+    # driver.find_element_by_xpath('//a[contains(@class,"layerCancel")]').click()
