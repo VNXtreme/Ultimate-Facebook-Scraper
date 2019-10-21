@@ -1,7 +1,10 @@
+from selenium.webdriver.support.ui import WebDriverWait
+
 from App.Controllers.Functions.common import safely_generate_url
 
 
 def scrape_gender(driver, fullUrl, isTimelineLayout):
+    WebDriverWait(driver, 2)
     navigateUrl = safely_generate_url(fullUrl, 'about?section=contact-info')
     driver.get(navigateUrl)
 
@@ -15,6 +18,7 @@ def scrape_gender(driver, fullUrl, isTimelineLayout):
 
 
 def scrape_biology(driver, fullUrl, isTimelineLayout):
+    WebDriverWait(driver, 2)
     navigateUrl = safely_generate_url(fullUrl, 'about?section=bio')
     if driver.current_url != navigateUrl:
         driver.get(navigateUrl)
@@ -33,6 +37,7 @@ def scrape_biology(driver, fullUrl, isTimelineLayout):
         return None
 
 def scrape_about(driver, fullUrl, isTimelineLayout):
+    WebDriverWait(driver, 2)
     navigateUrl = safely_generate_url(fullUrl, 'about?section=bio')
     if driver.current_url != navigateUrl:
         driver.get(navigateUrl)
@@ -51,6 +56,8 @@ def scrape_about(driver, fullUrl, isTimelineLayout):
         return None
 
 def scrape_location(driver, fullUrl, isTimelineLayout):
+    WebDriverWait(driver, 2)
+    location = None
     navigateUrl = safely_generate_url(fullUrl, 'about?section=living')
 
     if driver.current_url != navigateUrl:
@@ -59,13 +66,26 @@ def scrape_location(driver, fullUrl, isTimelineLayout):
     try:
         if isTimelineLayout:
             try:
-                return driver.find_element_by_xpath('//li[@id="current_city"]//span[@class="_2iel _50f7"]').text
+                location = driver.find_element_by_xpath('//li[@id="current_city"]//span[@class="_2iel _50f7"]').text
             except:
-                return driver.find_element_by_xpath('//li[@id="hometown"]//span[@class="_2iel _50f7"]').text
+                location = driver.find_element_by_xpath('//li[@id="hometown"]//span[@class="_2iel _50f7"]').text
         else:
             try:
-                return driver.find_element_by_xpath('//div[@class="_1xnd"]//*[contains(text(), "Vị trí hiện tại")]//following-sibling::div').text
+                location = driver.find_element_by_xpath('//div[@class="_1xnd"]//*[contains(text(), "Vị trí hiện tại")]//following-sibling::div').text
             except:
-                return driver.find_element_by_xpath('//div[@class="_1xnd"]//*[contains(text(), "Quê quán")]//following-sibling::div').text
+                location = driver.find_element_by_xpath('//div[@class="_1xnd"]//*[contains(text(), "Quê quán")]//following-sibling::div').text
+         
+        return filter_location_name(location)
     except:
         return None
+
+def filter_location_name(location):
+    arrayHCM = ['Hồ Chí Minh', 'HCM']
+    arrayHanoi = ['Hà Nội', 'hanoi']
+
+    if any(name in location for name in arrayHanoi):
+        return 'Hà Nội'
+    elif any(name in location for name in arrayHCM):
+        return 'Hồ Chí Minh'
+    else:
+        return location
