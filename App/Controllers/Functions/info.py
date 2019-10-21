@@ -1,3 +1,5 @@
+import re
+
 from selenium.webdriver.support.ui import WebDriverWait
 
 from App.Controllers.Functions.common import safely_generate_url
@@ -38,6 +40,7 @@ def scrape_biology(driver, fullUrl, isTimelineLayout):
 
 def scrape_about(driver, fullUrl, isTimelineLayout):
     WebDriverWait(driver, 2)
+    about = None
     navigateUrl = safely_generate_url(fullUrl, 'about?section=bio')
     if driver.current_url != navigateUrl:
         driver.get(navigateUrl)
@@ -49,9 +52,12 @@ def scrape_about(driver, fullUrl, isTimelineLayout):
                     '//div[@id="pagelet_bio"]//ul/li/span[@class="_50f8 _2iem"]').text # if element exist, no biology info
                 return None
             except:
-                return driver.find_element_by_xpath('//div[@id="pagelet_bio"]//ul/li').text
+                about = driver.find_element_by_xpath('//div[@id="pagelet_bio"]//ul/li').text
         else:
-            return driver.find_element_by_xpath('//div[@class="_1xnd"]//*[contains(text(), "Giới thiệu")]//following-sibling::div').text
+            about = driver.find_element_by_xpath('//div[@class="_1xnd"]//*[contains(text(), "Giới thiệu")]//following-sibling::div').text
+
+
+        return re.sub(r'\S+@\S+\.\S+|\d(\s*\d){6,12}', '*****', about)#remove email and phone number
     except:
         return None
 
