@@ -197,37 +197,37 @@ def open_reaction_popup(element, driver):
 
 def total_like(element) -> str:
     try:
-        return element.find_element_by_xpath('//div[@class="_59s7"]//div[@class="_4-i2 _50f4"]//ul[@class="_43o4 _4470"]//i[contains(@class,"sx_4bea19")]/ancestor::a[@class="_3m1v _468f"]').text
+        return element.find_element_by_xpath('//div[@class="_59s7"]//div[@class="_4-i2 _50f4"]//ul[@class="_43o4 _4470"]//i[contains(@class,"sx_07ad5e")]/ancestor::a[@class="_3m1v _468f"]').text
     except NoSuchElementException:
         return 0
 
 def total_haha(element) -> str:
     try:
-        return element.find_element_by_xpath('//div[@class="_59s7"]//div[@class="_4-i2 _50f4"]//ul[@class="_43o4 _4470"]//i[contains(@class,"sx_a2950f")]/ancestor::a[@class="_3m1v _468f"]').text
+        return element.find_element_by_xpath('//div[@class="_59s7"]//div[@class="_4-i2 _50f4"]//ul[@class="_43o4 _4470"]//i[contains(@class,"sx_e1f302")]/ancestor::a[@class="_3m1v _468f"]').text
     except NoSuchElementException:
         return 0
 
 def total_sad(element) -> str:
     try:
-        return element.find_element_by_xpath('//div[@class="_59s7"]//div[@class="_4-i2 _50f4"]//ul[@class="_43o4 _4470"]//i[contains(@class,"sx_a096e3")]/ancestor::a[@class="_3m1v _468f"]').text
+        return element.find_element_by_xpath('//div[@class="_59s7"]//div[@class="_4-i2 _50f4"]//ul[@class="_43o4 _4470"]//i[contains(@class,"sx_8d23c2")]/ancestor::a[@class="_3m1v _468f"]').text
     except NoSuchElementException:
         return 0
 
 def total_anger(element) -> str:
     try:
-        return element.find_element_by_xpath('//div[@class="_59s7"]//div[@class="_4-i2 _50f4"]//ul[@class="_43o4 _4470"]//i[contains(@class,"sx_84f78e")]/ancestor::a[@class="_3m1v _468f"]').text
+        return element.find_element_by_xpath('//div[@class="_59s7"]//div[@class="_4-i2 _50f4"]//ul[@class="_43o4 _4470"]//i[contains(@class,"sx_162385")]/ancestor::a[@class="_3m1v _468f"]').text
     except NoSuchElementException:
         return 0
 
 def total_wow(element) -> str:
     try:
-        return element.find_element_by_xpath('//div[@class="_59s7"]//div[@class="_4-i2 _50f4"]//ul[@class="_43o4 _4470"]//i[contains(@class,"sx_554255")]/ancestor::a[@class="_3m1v _468f"]').text
+        return element.find_element_by_xpath('//div[@class="_59s7"]//div[@class="_4-i2 _50f4"]//ul[@class="_43o4 _4470"]//i[contains(@class,"sx_8b39f1")]/ancestor::a[@class="_3m1v _468f"]').text
     except NoSuchElementException:
         return 0
 
 def total_love(element) -> str:
     try:
-        return element.find_element_by_xpath('//div[@class="_59s7"]//div[@class="_4-i2 _50f4"]//ul[@class="_43o4 _4470"]//i[contains(@class,"sx_fadf3e")]/ancestor::a[@class="_3m1v _468f"]').text
+        return element.find_element_by_xpath('//div[@class="_59s7"]//div[@class="_4-i2 _50f4"]//ul[@class="_43o4 _4470"]//i[contains(@class,"sx_24e654")]/ancestor::a[@class="_3m1v _468f"]').text
     except NoSuchElementException:
         return 0
 
