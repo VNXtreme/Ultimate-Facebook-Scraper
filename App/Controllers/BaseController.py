@@ -71,6 +71,8 @@ class BaseController():
         options.add_argument("--disable-notifications")
         options.add_argument("--disable-infobars")
         options.add_argument("--mute-audio")
+        # options.add_argument("user-data-dir=C:\\Users\\Xtreme\\AppData\\Local\\Google\\Chrome\\User Data1") #Path to your chrome profile C:\Users\Xtreme\AppData\Local\Google\Chrome\User Data
+        # options.add_argument('profile-directory=Default1')
         # options.add_argument("headless")
 
         try:
@@ -99,36 +101,37 @@ class BaseController():
             self.driver.get("https://en-gb.facebook.com")
             self.driver.maximize_window()
 
-            # filling the form
-            self.driver.find_element_by_name('email').send_keys(email)
-            self.driver.find_element_by_name('pass').send_keys(password)
+            if(self.driver.find_element_by_name('email')):
+                # filling the form
+                self.driver.find_element_by_name('email').send_keys(email)
+                self.driver.find_element_by_name('pass').send_keys(password)
 
-            # clicking on login button
-            try:
-                self.driver.find_element_by_xpath(
-                    '//button[@name="login"]').click()
-            except NoSuchElementException:
-                self.driver.find_element_by_id('loginbutton').click()
+                # clicking on login button
+                try:
+                    self.driver.find_element_by_xpath(
+                        '//button[@name="login"]').click()
+                except NoSuchElementException:
+                    self.driver.find_element_by_id('loginbutton').click()
 
-            # if your account uses multi factor authentication
-            mfa_code_input = self.safe_find_element_by_id(
-                self.driver, 'approvals_code')
+                # if your account uses multi factor authentication
+                mfa_code_input = self.safe_find_element_by_id(
+                    self.driver, 'approvals_code')
 
-            if mfa_code_input is None:
-                return
+                if mfa_code_input is None:
+                    return
 
-            mfa_code_input.send_keys(input("Enter MFA code: "))
-            self.driver.find_element_by_id('checkpointSubmitButton').click()
+                mfa_code_input.send_keys(input("Enter MFA code: "))
+                self.driver.find_element_by_id('checkpointSubmitButton').click()
 
-            # there are so many screens asking you to verify things. Just skip them all
-            while self.safe_find_element_by_id(self.driver, 'checkpointSubmitButton') is not None:
-                dont_save_browser_radio = self.safe_find_element_by_id(
-                    self.driver, 'u_0_3')
-                if dont_save_browser_radio is not None:
-                    dont_save_browser_radio.click()
+                # there are so many screens asking you to verify things. Just skip them all
+                while self.safe_find_element_by_id(self.driver, 'checkpointSubmitButton') is not None:
+                    dont_save_browser_radio = self.safe_find_element_by_id(
+                        self.driver, 'u_0_3')
+                    if dont_save_browser_radio is not None:
+                        dont_save_browser_radio.click()
 
-                self.driver.find_element_by_id(
-                    'checkpointSubmitButton').click()
+                    self.driver.find_element_by_id(
+                        'checkpointSubmitButton').click()
 
         except Exception as e:
             print("There's some error in log in.")
