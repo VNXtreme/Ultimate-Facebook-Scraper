@@ -40,7 +40,7 @@ class ScrapeController(BaseController):
 
             self.login_facebook_on_browser()
             self.scrape_elements(listFbUsername)
-            self.driver.close()
+            self.driver.quit()
             return 'Done'
         else:
             print("Input file is empty.")
