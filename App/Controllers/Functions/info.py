@@ -6,7 +6,7 @@ from App.Controllers.Functions.common import safely_generate_url
 
 
 def scrape_gender(driver, fullUrl, isTimelineLayout):
-    WebDriverWait(driver, 2)
+    driver.implicitly_wait(2)
     navigateUrl = safely_generate_url(fullUrl, 'about?section=contact-info')
     driver.get(navigateUrl)
 
@@ -20,7 +20,7 @@ def scrape_gender(driver, fullUrl, isTimelineLayout):
 
 
 def scrape_biology(driver, fullUrl, isTimelineLayout):
-    WebDriverWait(driver, 2)
+    driver.implicitly_wait(2)
     navigateUrl = safely_generate_url(fullUrl, 'about?section=bio')
     if driver.current_url != navigateUrl:
         driver.get(navigateUrl)
@@ -39,7 +39,8 @@ def scrape_biology(driver, fullUrl, isTimelineLayout):
         return None
 
 def scrape_about(driver, fullUrl, isTimelineLayout):
-    WebDriverWait(driver, 2)
+    # WebDriverWait(driver, 2)
+    driver.implicitly_wait(2)
     about = None
     navigateUrl = safely_generate_url(fullUrl, 'about?section=bio')
     if driver.current_url != navigateUrl:
@@ -62,7 +63,7 @@ def scrape_about(driver, fullUrl, isTimelineLayout):
         return None
 
 def scrape_location(driver, fullUrl, isTimelineLayout):
-    WebDriverWait(driver, 2)
+    driver.implicitly_wait(2)
     location = None
     navigateUrl = safely_generate_url(fullUrl, 'about?section=living')
 
